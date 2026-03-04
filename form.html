@@ -568,15 +568,286 @@ input[type="range"] {
       <div class="radio-item"><input type="radio" name="total_houses" id="th3" value="3" onchange="toggleMultiHouse()"><label for="th3"><span class="radio-dot"></span>3주택 이상</label></div>
     </div>
 
-    <!-- 다주택 시 -->
+    <!-- 다주택 시 — 최대 2채 상세 카드 -->
     <div class="conditional" id="cond_multi_house">
-      <div class="field">
-        <label class="field-label">다른 주택들의 소재지 및 취득연도 (간략히)</label>
-        <textarea id="other_houses" placeholder="예: 경기도 수원시 2020년 취득, 서울 노원구 2015년 취득"></textarea>
+      <p class="field-hint" style="margin-top:12px;line-height:1.7;">
+        다른 주택의 정보를 입력해주세요. 어느 주택을 먼저 파는 게 유리한지 비교 분석합니다.<br>
+        <span style="color:var(--gold);">4채 이상 보유 시 세금 영향이 가장 큰 주택 2채만 입력해주세요.</span>
+      </p>
+
+      <!-- 2주택 시 자동 표시 -->
+      <div id="house-card-2" style="display:none;">
+    <div id="house-card-2" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);
+      border-radius:10px;padding:20px;margin-top:16px;">
+      <div style="color:var(--gold);font-weight:700;font-size:14px;margin-bottom:16px;
+        letter-spacing:.05em;">주택 ②</div>
+
+      <div style="margin-bottom:14px;">
+        <label class="field-label">소재지</label>
+        <input type="text" id="oh_location_2" placeholder="예: 서울 마포구 / 경기 수원시"
+          style="width:100%;padding:10px 12px;background:var(--input-bg);border:1px solid var(--border);
+          border-radius:6px;color:var(--fg);font-size:14px;font-family:inherit;">
       </div>
-      <div class="field">
-        <label class="field-label">일시적 2주택 해당 여부</label>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div>
+          <label class="field-label">취득 연도</label>
+          <select id="oh_acq_year_2" class="date-select" style="width:100%;">
+            <option value="">연도 선택</option>
+          <option value="1980">1980년</option>
+          <option value="1981">1981년</option>
+          <option value="1982">1982년</option>
+          <option value="1983">1983년</option>
+          <option value="1984">1984년</option>
+          <option value="1985">1985년</option>
+          <option value="1986">1986년</option>
+          <option value="1987">1987년</option>
+          <option value="1988">1988년</option>
+          <option value="1989">1989년</option>
+          <option value="1990">1990년</option>
+          <option value="1991">1991년</option>
+          <option value="1992">1992년</option>
+          <option value="1993">1993년</option>
+          <option value="1994">1994년</option>
+          <option value="1995">1995년</option>
+          <option value="1996">1996년</option>
+          <option value="1997">1997년</option>
+          <option value="1998">1998년</option>
+          <option value="1999">1999년</option>
+          <option value="2000">2000년</option>
+          <option value="2001">2001년</option>
+          <option value="2002">2002년</option>
+          <option value="2003">2003년</option>
+          <option value="2004">2004년</option>
+          <option value="2005">2005년</option>
+          <option value="2006">2006년</option>
+          <option value="2007">2007년</option>
+          <option value="2008">2008년</option>
+          <option value="2009">2009년</option>
+          <option value="2010">2010년</option>
+          <option value="2011">2011년</option>
+          <option value="2012">2012년</option>
+          <option value="2013">2013년</option>
+          <option value="2014">2014년</option>
+          <option value="2015">2015년</option>
+          <option value="2016">2016년</option>
+          <option value="2017">2017년</option>
+          <option value="2018">2018년</option>
+          <option value="2019">2019년</option>
+          <option value="2020">2020년</option>
+          <option value="2021">2021년</option>
+          <option value="2022">2022년</option>
+          <option value="2023">2023년</option>
+          <option value="2024">2024년</option>
+          <option value="2025">2025년</option>
+          <option value="2026">2026년</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">취득 월</label>
+          <select id="oh_acq_month_2" class="date-select" style="width:100%;">
+          <option value="0">모름</option>
+          <option value="1">1월</option>
+          <option value="2">2월</option>
+          <option value="3">3월</option>
+          <option value="4">4월</option>
+          <option value="5">5월</option>
+          <option value="6">6월</option>
+          <option value="7">7월</option>
+          <option value="8">8월</option>
+          <option value="9">9월</option>
+          <option value="10">10월</option>
+          <option value="11">11월</option>
+          <option value="12">12월</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div>
+          <label class="field-label">취득가 <span class="unit-badge">백만원</span></label>
+          <input type="text" id="oh_acq_price_2" placeholder="예: 450"
+            oninput="showMoneyPreview('oh_acq_price_2')"
+            style="width:100%;padding:10px 12px;background:var(--input-bg);border:1px solid var(--border);
+            border-radius:6px;color:var(--fg);font-size:14px;font-family:inherit;">
+          <div id="oh_acq_price_2_preview" style="font-size:12px;color:#888;margin-top:3px;min-height:16px;"></div>
+        </div>
+        <div>
+          <label class="field-label">현재 시세 <span class="unit-badge">백만원</span></label>
+          <input type="text" id="oh_cur_price_2" placeholder="예: 800"
+            oninput="showMoneyPreview('oh_cur_price_2')"
+            style="width:100%;padding:10px 12px;background:var(--input-bg);border:1px solid var(--border);
+            border-radius:6px;color:var(--fg);font-size:14px;font-family:inherit;">
+          <div id="oh_cur_price_2_preview" style="font-size:12px;color:#888;margin-top:3px;min-height:16px;"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label class="field-label">실거주 기간</label>
         <div class="radio-group">
+          <div class="radio-item"><input type="radio" name="oh_residence_2" id="ohr0_2" value="거주안함"><label for="ohr0_2"><span class="radio-dot"></span>거주 안 함</label></div>
+          <div class="radio-item"><input type="radio" name="oh_residence_2" id="ohr1_2" value="2년미만"><label for="ohr1_2"><span class="radio-dot"></span>2년 미만</label></div>
+          <div class="radio-item"><input type="radio" name="oh_residence_2" id="ohr2_2" value="2년이상"><label for="ohr2_2"><span class="radio-dot"></span>2년 이상</label></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <label class="field-label">취득 당시 조정지역</label>
+          <div class="radio-group col" style="gap:4px;">
+            <div class="radio-item"><input type="radio" name="oh_adj_2" id="ohad0_2" value="예"><label for="ohad0_2"><span class="radio-dot"></span>예</label></div>
+            <div class="radio-item"><input type="radio" name="oh_adj_2" id="ohad1_2" value="아니오"><label for="ohad1_2"><span class="radio-dot"></span>아니오</label></div>
+            <div class="radio-item"><input type="radio" name="oh_adj_2" id="ohad2_2" value="모름"><label for="ohad2_2"><span class="radio-dot"></span>모름</label></div>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">공동명의</label>
+          <div class="radio-group col" style="gap:4px;">
+            <div class="radio-item"><input type="radio" name="oh_joint_2" id="ohj0_2" value="단독"><label for="ohj0_2"><span class="radio-dot"></span>단독명의</label></div>
+            <div class="radio-item"><input type="radio" name="oh_joint_2" id="ohj1_2" value="공동"><label for="ohj1_2"><span class="radio-dot"></span>공동명의</label></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+
+      <!-- 3주택 이상 시 추가 표시 -->
+      <div id="house-card-3" style="display:none;">
+    <div id="house-card-3" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);
+      border-radius:10px;padding:20px;margin-top:16px;">
+      <div style="color:var(--gold);font-weight:700;font-size:14px;margin-bottom:16px;
+        letter-spacing:.05em;">주택 ③</div>
+
+      <div style="margin-bottom:14px;">
+        <label class="field-label">소재지</label>
+        <input type="text" id="oh_location_3" placeholder="예: 서울 마포구 / 경기 수원시"
+          style="width:100%;padding:10px 12px;background:var(--input-bg);border:1px solid var(--border);
+          border-radius:6px;color:var(--fg);font-size:14px;font-family:inherit;">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div>
+          <label class="field-label">취득 연도</label>
+          <select id="oh_acq_year_3" class="date-select" style="width:100%;">
+            <option value="">연도 선택</option>
+          <option value="1980">1980년</option>
+          <option value="1981">1981년</option>
+          <option value="1982">1982년</option>
+          <option value="1983">1983년</option>
+          <option value="1984">1984년</option>
+          <option value="1985">1985년</option>
+          <option value="1986">1986년</option>
+          <option value="1987">1987년</option>
+          <option value="1988">1988년</option>
+          <option value="1989">1989년</option>
+          <option value="1990">1990년</option>
+          <option value="1991">1991년</option>
+          <option value="1992">1992년</option>
+          <option value="1993">1993년</option>
+          <option value="1994">1994년</option>
+          <option value="1995">1995년</option>
+          <option value="1996">1996년</option>
+          <option value="1997">1997년</option>
+          <option value="1998">1998년</option>
+          <option value="1999">1999년</option>
+          <option value="2000">2000년</option>
+          <option value="2001">2001년</option>
+          <option value="2002">2002년</option>
+          <option value="2003">2003년</option>
+          <option value="2004">2004년</option>
+          <option value="2005">2005년</option>
+          <option value="2006">2006년</option>
+          <option value="2007">2007년</option>
+          <option value="2008">2008년</option>
+          <option value="2009">2009년</option>
+          <option value="2010">2010년</option>
+          <option value="2011">2011년</option>
+          <option value="2012">2012년</option>
+          <option value="2013">2013년</option>
+          <option value="2014">2014년</option>
+          <option value="2015">2015년</option>
+          <option value="2016">2016년</option>
+          <option value="2017">2017년</option>
+          <option value="2018">2018년</option>
+          <option value="2019">2019년</option>
+          <option value="2020">2020년</option>
+          <option value="2021">2021년</option>
+          <option value="2022">2022년</option>
+          <option value="2023">2023년</option>
+          <option value="2024">2024년</option>
+          <option value="2025">2025년</option>
+          <option value="2026">2026년</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">취득 월</label>
+          <select id="oh_acq_month_3" class="date-select" style="width:100%;">
+          <option value="0">모름</option>
+          <option value="1">1월</option>
+          <option value="2">2월</option>
+          <option value="3">3월</option>
+          <option value="4">4월</option>
+          <option value="5">5월</option>
+          <option value="6">6월</option>
+          <option value="7">7월</option>
+          <option value="8">8월</option>
+          <option value="9">9월</option>
+          <option value="10">10월</option>
+          <option value="11">11월</option>
+          <option value="12">12월</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div>
+          <label class="field-label">취득가 <span class="unit-badge">백만원</span></label>
+          <input type="text" id="oh_acq_price_3" placeholder="예: 450"
+            oninput="showMoneyPreview('oh_acq_price_3')"
+            style="width:100%;padding:10px 12px;background:var(--input-bg);border:1px solid var(--border);
+            border-radius:6px;color:var(--fg);font-size:14px;font-family:inherit;">
+          <div id="oh_acq_price_3_preview" style="font-size:12px;color:#888;margin-top:3px;min-height:16px;"></div>
+        </div>
+        <div>
+          <label class="field-label">현재 시세 <span class="unit-badge">백만원</span></label>
+          <input type="text" id="oh_cur_price_3" placeholder="예: 800"
+            oninput="showMoneyPreview('oh_cur_price_3')"
+            style="width:100%;padding:10px 12px;background:var(--input-bg);border:1px solid var(--border);
+            border-radius:6px;color:var(--fg);font-size:14px;font-family:inherit;">
+          <div id="oh_cur_price_3_preview" style="font-size:12px;color:#888;margin-top:3px;min-height:16px;"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label class="field-label">실거주 기간</label>
+        <div class="radio-group">
+          <div class="radio-item"><input type="radio" name="oh_residence_3" id="ohr0_3" value="거주안함"><label for="ohr0_3"><span class="radio-dot"></span>거주 안 함</label></div>
+          <div class="radio-item"><input type="radio" name="oh_residence_3" id="ohr1_3" value="2년미만"><label for="ohr1_3"><span class="radio-dot"></span>2년 미만</label></div>
+          <div class="radio-item"><input type="radio" name="oh_residence_3" id="ohr2_3" value="2년이상"><label for="ohr2_3"><span class="radio-dot"></span>2년 이상</label></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <label class="field-label">취득 당시 조정지역</label>
+          <div class="radio-group col" style="gap:4px;">
+            <div class="radio-item"><input type="radio" name="oh_adj_3" id="ohad0_3" value="예"><label for="ohad0_3"><span class="radio-dot"></span>예</label></div>
+            <div class="radio-item"><input type="radio" name="oh_adj_3" id="ohad1_3" value="아니오"><label for="ohad1_3"><span class="radio-dot"></span>아니오</label></div>
+            <div class="radio-item"><input type="radio" name="oh_adj_3" id="ohad2_3" value="모름"><label for="ohad2_3"><span class="radio-dot"></span>모름</label></div>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">공동명의</label>
+          <div class="radio-group col" style="gap:4px;">
+            <div class="radio-item"><input type="radio" name="oh_joint_3" id="ohj0_3" value="단독"><label for="ohj0_3"><span class="radio-dot"></span>단독명의</label></div>
+            <div class="radio-item"><input type="radio" name="oh_joint_3" id="ohj1_3" value="공동"><label for="ohj1_3"><span class="radio-dot"></span>공동명의</label></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+
+      <div class="field" style="margin-top:20px;">
+        <label class="field-label">일시적 2주택 해당 여부</label>
+        <div class="radio-group col">
           <div class="radio-item"><input type="radio" name="temp_2house" id="t2h1" value="해당"><label for="t2h1"><span class="radio-dot"></span>해당 (신규 취득 후 3년 내 처분 예정)</label></div>
           <div class="radio-item"><input type="radio" name="temp_2house" id="t2h2" value="해당없음"><label for="t2h2"><span class="radio-dot"></span>해당 없음</label></div>
           <div class="radio-item"><input type="radio" name="temp_2house" id="t2h3" value="모름"><label for="t2h3"><span class="radio-dot"></span>잘 모름</label></div>
@@ -1277,7 +1548,7 @@ input[type="range"] {
 
   <div class="btn-row">
     <button class="btn btn-prev" onclick="prevStep(5)">← 이전</button>
-    <button class="btn btn-save" id="saveBtn5" onclick="saveAndNext('5b')">저장하고 다음 →</button>
+    <button class="btn btn-save" id="saveBtn5" onclick="saveAndNext('5c')">저장하고 다음 →</button>
   </div>
 </div>
 
@@ -1290,6 +1561,8 @@ input[type="range"] {
 
   <div class="notice">
     주택마다 취득시기·거주기간·시세가 다르면 세금 차이가 크게 납니다.<br>
+    <strong>최대 2채까지 추가 가능 (기본 주택 포함 총 3채)</strong> — 어느 주택을 먼저 파는 게 유리한지 비교 분석합니다.<br>
+    4채 이상 보유하신 경우, 세금 영향이 큰 주택 3채를 선택해 입력해주세요.<br>
     1채뿐이거나 다른 주택 정보가 없으면 건너뛰어도 됩니다.
   </div>
 
@@ -1297,11 +1570,14 @@ input[type="range"] {
     <!-- 동적으로 추가됨 -->
   </div>
 
-  <button type="button" onclick="addHouseCard()"
+  <button type="button" id="add-house-btn" onclick="addHouseCard()"
     style="width:100%;margin-top:8px;background:transparent;border:1px dashed var(--gold);
     color:var(--gold);font-size:14px;padding:14px;border-radius:8px;cursor:pointer;font-family:inherit;">
-    + 다른 주택 추가
+    + 다른 주택 추가 (최대 2채)
   </button>
+  <p class="field-hint" id="house-limit-msg" style="display:none;color:var(--gold);margin-top:8px;">
+    ✓ 최대 2채 추가 완료. 4채 이상 보유 시 세금 영향이 가장 큰 주택 위주로 입력해주세요.
+  </p>
 
   <div class="btn-row">
     <button class="btn btn-prev" onclick="prevStep('5b')">← 이전</button>
@@ -1678,7 +1954,7 @@ function goStep(n) {
 }
 
 // ── 스텝 순서 맵 (5b, 5c 포함)
-const STEP_ORDER = ['1','2','3','4','5','5b','5c','6','7'];
+const STEP_ORDER = ['1','2','3','4','5','5c','6','7'];
 function stepNext(id) {
   const i = STEP_ORDER.indexOf(String(id));
   return i >= 0 && i < STEP_ORDER.length - 1 ? STEP_ORDER[i+1] : null;
@@ -1689,7 +1965,7 @@ function stepPrev(id) {
 }
 function stepNum(id) {
   // 진행률 표시용 — 5b→5, 5c→5 로 취급
-  const map = {'1':1,'2':2,'3':3,'4':4,'5':5,'5b':5,'5c':5,'6':6,'7':7};
+  const map = {'1':1,'2':2,'3':3,'4':4,'5':5,'5c':5,'6':6,'7':7};
   return map[String(id)] || parseInt(id) || 1;
 }
 
@@ -1777,7 +2053,23 @@ function validateStep(step) {
 // ── 조건부 표시
 function toggleMultiHouse() {
   const val = document.querySelector('input[name="total_houses"]:checked')?.value;
-  document.getElementById('cond_multi_house').classList.toggle('show', val === '2' || val === '3');
+  const multi = document.getElementById('cond_multi_house');
+  const card2 = document.getElementById('house-card-2');
+  const card3 = document.getElementById('house-card-3');
+
+  if (val === '1' || !val) {
+    multi.classList.remove('show');
+    if (card2) card2.style.display = 'none';
+    if (card3) card3.style.display = 'none';
+  } else if (val === '2') {
+    multi.classList.add('show');
+    if (card2) card2.style.display = 'block';
+    if (card3) card3.style.display = 'none';
+  } else if (val === '3') {
+    multi.classList.add('show');
+    if (card2) card2.style.display = 'block';
+    if (card3) card3.style.display = 'block';
+  }
 }
 function toggleDebt() {
   const val = document.querySelector('input[name="has_debt"]:checked')?.value;
@@ -2118,6 +2410,10 @@ function showError(msg) {
 let houseCount = 0;
 
 function addHouseCard() {
+  // 기존 카드 수 확인 (삭제된 것 제외)
+  const existing = document.querySelectorAll('#other-houses-container > div').length;
+  if (existing >= 2) return;
+
   houseCount++;
   const n = houseCount;
   const container = document.getElementById('other-houses-container');
@@ -2228,29 +2524,47 @@ function addHouseCard() {
   `;
 
   container.appendChild(card);
+  updateHouseBtn();
 }
 
 function removeHouseCard(n) {
   const card = document.getElementById(`house-card-${n}`);
   if (card) card.remove();
+  updateHouseBtn();
+}
+
+function updateHouseBtn() {
+  const existing = document.querySelectorAll('#other-houses-container > div').length;
+  const btn = document.getElementById('add-house-btn');
+  const msg = document.getElementById('house-limit-msg');
+  if (!btn) return;
+  if (existing >= 2) {
+    btn.style.display = 'none';
+    if (msg) msg.style.display = 'block';
+  } else {
+    btn.style.display = 'block';
+    if (msg) msg.style.display = 'none';
+    btn.textContent = existing === 1 ? '+ 다른 주택 추가 (1채 더 가능)' : '+ 다른 주택 추가 (최대 2채)';
+  }
 }
 
 // 다주택 카드 데이터 수집
 function collectOtherHouses() {
   const houses = [];
-  for (let i = 1; i <= houseCount; i++) {
+  const val = document.querySelector('input[name="total_houses"]:checked')?.value;
+  const targets = val === '3' ? [2, 3] : val === '2' ? [2] : [];
+  for (const i of targets) {
     const card = document.getElementById(`house-card-${i}`);
-    if (!card) continue;
+    if (!card || card.style.display === 'none') continue;
     houses.push({
-      소재지:         document.getElementById(`oh_location_${i}`)?.value || '',
-      취득연도:       document.getElementById(`oh_acq_year_${i}`)?.value || '',
-      취득월:         document.getElementById(`oh_acq_month_${i}`)?.value || '',
-      취득가:         parseMoney(document.getElementById(`oh_acq_price_${i}`)?.value || ''),
-      현재시세:       parseMoney(document.getElementById(`oh_cur_price_${i}`)?.value || ''),
-      거주기간:       document.querySelector(`input[name="oh_residence_${i}"]:checked`)?.value || '',
-      조정지역:       document.querySelector(`input[name="oh_adj_${i}"]:checked`)?.value || '',
-      공동명의:       document.querySelector(`input[name="oh_joint_${i}"]:checked`)?.value || '',
-      임대여부:       document.querySelector(`input[name="oh_rent_${i}"]:checked`)?.value || '',
+      소재지:   document.getElementById(`oh_location_${i}`)?.value || '',
+      취득연도: document.getElementById(`oh_acq_year_${i}`)?.value || '',
+      취득월:   document.getElementById(`oh_acq_month_${i}`)?.value || '',
+      취득가:   parseMoney(document.getElementById(`oh_acq_price_${i}`)?.value || ''),
+      현재시세: parseMoney(document.getElementById(`oh_cur_price_${i}`)?.value || ''),
+      거주기간: document.querySelector(`input[name="oh_residence_${i}"]:checked`)?.value || '',
+      조정지역: document.querySelector(`input[name="oh_adj_${i}"]:checked`)?.value || '',
+      공동명의: document.querySelector(`input[name="oh_joint_${i}"]:checked`)?.value || '',
     });
   }
   return houses;

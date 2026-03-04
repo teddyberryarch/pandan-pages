@@ -489,7 +489,7 @@ input[type="range"] {
   <div class="field">
     <label class="field-label required">취득 연도 <span style="font-weight:300;color:var(--dim)">/ 월 (선택)</span></label>
     <div style="display:flex;gap:8px;">
-        <select id="acquisition_date_year" class="date-select">
+        <select id="acquisition_date_year" class="date-select" style="flex:1">
           <option value="">연도 선택</option>
           <option value="1980">1980년</option>
           <option value="1981">1981년</option>
@@ -541,6 +541,8 @@ input[type="range"] {
         </select>
         <select id="acquisition_date_month" class="date-select" style="flex:1">
           <option value="">월 선택</option>
+          <option value="0">모름</option>
+          <option value="0">모름</option>
           <option value="1">1월</option>
           <option value="2">2월</option>
           <option value="3">3월</option>
@@ -820,6 +822,7 @@ input[type="range"] {
         </select>
         <select id="redev_mgmt_date_month" class="date-select">
           <option value="">월 선택</option>
+          <option value="0">모름</option>
           <option value="1">1월</option>
           <option value="2">2월</option>
           <option value="3">3월</option>
@@ -890,6 +893,7 @@ input[type="range"] {
         </select>
         <select id="redev_move_in_date_month" class="date-select">
           <option value="">월 선택</option>
+          <option value="0">모름</option>
           <option value="1">1월</option>
           <option value="2">2월</option>
           <option value="3">3월</option>
@@ -971,6 +975,7 @@ input[type="range"] {
         </select>
         <select id="presale_date_month" class="date-select">
           <option value="">월 선택</option>
+          <option value="0">모름</option>
           <option value="1">1월</option>
           <option value="2">2월</option>
           <option value="3">3월</option>
@@ -1133,6 +1138,7 @@ input[type="range"] {
         </select>
         <select id="parent_merge_date_month" class="date-select">
           <option value="">월 선택</option>
+          <option value="0">모름</option>
           <option value="1">1월</option>
           <option value="2">2월</option>
           <option value="3">3월</option>

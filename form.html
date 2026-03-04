@@ -607,7 +607,7 @@ input[type="range"] {
   <div class="field">
     <label class="field-label required">현재 담보대출/채무 여부</label>
     <div class="radio-group">
-      <div class="radio-item"><input type="radio" name="has_debt" id="hd1" value="없음"><label for="hd1"><span class="radio-dot"></span>없음</label></div>
+      <div class="radio-item"><input type="radio" name="has_debt" id="hd1" value="없음" onchange="toggleDebt()"><label for="hd1"><span class="radio-dot"></span>없음</label></div>
       <div class="radio-item"><input type="radio" name="has_debt" id="hd2" value="있음" onchange="toggleDebt()"><label for="hd2"><span class="radio-dot"></span>있음</label></div>
     </div>
     <div class="conditional" id="cond_debt">
@@ -622,9 +622,9 @@ input[type="range"] {
   <div class="field">
     <label class="field-label required">임대사업자 등록 여부</label>
     <div class="radio-group">
-      <div class="radio-item"><input type="radio" name="rental_business" id="rb1" value="미등록"><label for="rb1"><span class="radio-dot"></span>미등록</label></div>
+      <div class="radio-item"><input type="radio" name="rental_business" id="rb1" value="미등록" onchange="toggleRental()"><label for="rb1"><span class="radio-dot"></span>미등록</label></div>
       <div class="radio-item"><input type="radio" name="rental_business" id="rb2" value="등록" onchange="toggleRental()"><label for="rb2"><span class="radio-dot"></span>등록</label></div>
-      <div class="radio-item"><input type="radio" name="rental_business" id="rb3" value="말소"><label for="rb3"><span class="radio-dot"></span>등록 후 말소</label></div>
+      <div class="radio-item"><input type="radio" name="rental_business" id="rb3" value="말소" onchange="toggleRental()"><label for="rb3"><span class="radio-dot"></span>등록 후 말소</label></div>
     </div>
     <div class="conditional" id="cond_rental">
       <div class="field">
@@ -669,11 +669,11 @@ input[type="range"] {
   <div class="field">
     <label class="field-label required">취득 방법</label>
     <div class="radio-group col">
-      <div class="radio-item"><input type="radio" name="acquisition_method" id="am1" value="매매"><label for="am1"><span class="radio-dot"></span>매매 (직접 구입)</label></div>
+      <div class="radio-item"><input type="radio" name="acquisition_method" id="am1" value="매매" onchange="toggleGiftAcq()"><label for="am1"><span class="radio-dot"></span>매매 (직접 구입)</label></div>
       <div class="radio-item"><input type="radio" name="acquisition_method" id="am2" value="증여" onchange="toggleGiftAcq()"><label for="am2"><span class="radio-dot"></span>증여로 취득</label></div>
       <div class="radio-item"><input type="radio" name="acquisition_method" id="am3" value="상속" onchange="toggleGiftAcq()"><label for="am3"><span class="radio-dot"></span>상속으로 취득</label></div>
-      <div class="radio-item"><input type="radio" name="acquisition_method" id="am4" value="분양"><label for="am4"><span class="radio-dot"></span>분양 (신규 분양)</label></div>
-      <div class="radio-item"><input type="radio" name="acquisition_method" id="am5" value="입주권"><label for="am5"><span class="radio-dot"></span>입주권/분양권 취득</label></div>
+      <div class="radio-item"><input type="radio" name="acquisition_method" id="am4" value="분양" onchange="toggleGiftAcq()"><label for="am4"><span class="radio-dot"></span>분양 (신규 분양)</label></div>
+      <div class="radio-item"><input type="radio" name="acquisition_method" id="am5" value="입주권" onchange="toggleGiftAcq()"><label for="am5"><span class="radio-dot"></span>입주권/분양권 취득</label></div>
     </div>
     <div class="conditional" id="cond_gift_acq">
       <div class="field">
@@ -888,7 +888,7 @@ input[type="range"] {
   <div class="field">
     <label class="field-label">취득 당시 분양권으로 취득한 경우</label>
     <div class="radio-group">
-      <div class="radio-item"><input type="radio" name="was_presale" id="wp1" value="해당없음"><label for="wp1"><span class="radio-dot"></span>해당 없음</label></div>
+      <div class="radio-item"><input type="radio" name="was_presale" id="wp1" value="해당없음" onchange="togglePresale()"><label for="wp1"><span class="radio-dot"></span>해당 없음</label></div>
       <div class="radio-item"><input type="radio" name="was_presale" id="wp2" value="해당" onchange="togglePresale()"><label for="wp2"><span class="radio-dot"></span>분양권 취득 후 완공</label></div>
     </div>
     <div class="conditional" id="cond_presale">
@@ -1015,7 +1015,7 @@ input[type="range"] {
     <div class="field">
       <label class="field-label">배우자 명의 주택 보유 여부</label>
       <div class="radio-group">
-        <div class="radio-item"><input type="radio" name="spouse_property" id="sp1" value="없음"><label for="sp1"><span class="radio-dot"></span>없음</label></div>
+        <div class="radio-item"><input type="radio" name="spouse_property" id="sp1" value="없음" onchange="toggleSpouseProperty()"><label for="sp1"><span class="radio-dot"></span>없음</label></div>
         <div class="radio-item"><input type="radio" name="spouse_property" id="sp2" value="있음" onchange="toggleSpouseProperty()"><label for="sp2"><span class="radio-dot"></span>있음</label></div>
       </div>
       <div class="conditional" id="cond_spouse_property">
@@ -1187,7 +1187,7 @@ input[type="range"] {
   <div class="field">
     <label class="field-label">증여 이력 (최근 10년 이내)</label>
     <div class="radio-group">
-      <div class="radio-item"><input type="radio" name="gift_history" id="gh1" value="없음"><label for="gh1"><span class="radio-dot"></span>없음</label></div>
+      <div class="radio-item"><input type="radio" name="gift_history" id="gh1" value="없음" onchange="toggleGiftHistory()"><label for="gh1"><span class="radio-dot"></span>없음</label></div>
       <div class="radio-item"><input type="radio" name="gift_history" id="gh2" value="있음" onchange="toggleGiftHistory()"><label for="gh2"><span class="radio-dot"></span>있음</label></div>
     </div>
     <div class="conditional" id="cond_gift_history">
@@ -1211,7 +1211,7 @@ input[type="range"] {
   <div class="field">
     <label class="field-label">상속 관련 사항</label>
     <div class="radio-group col">
-      <div class="radio-item"><input type="radio" name="inheritance" id="inh1" value="해당없음"><label for="inh1"><span class="radio-dot"></span>해당 없음</label></div>
+      <div class="radio-item"><input type="radio" name="inheritance" id="inh1" value="해당없음" onchange="toggleInheritance()"><label for="inh1"><span class="radio-dot"></span>해당 없음</label></div>
       <div class="radio-item"><input type="radio" name="inheritance" id="inh2" value="상속예정" onchange="toggleInheritance()"><label for="inh2"><span class="radio-dot"></span>향후 상속 예정 (부모님 부동산)</label></div>
       <div class="radio-item"><input type="radio" name="inheritance" id="inh3" value="상속받음" onchange="toggleInheritance()"><label for="inh3"><span class="radio-dot"></span>이미 상속 받음</label></div>
     </div>
@@ -1625,7 +1625,7 @@ document.getElementById('agree_disclaimer').addEventListener('change', function(
   const email = document.getElementById('user_email').value.trim();
   document.getElementById('submitBtn').disabled = !(this.checked && name && email);
 });
-['user_name','user_email'].forEach(id => {
+['user_name','user_email'].forEach(id = onchange="toggleDebt()"> {
   document.getElementById(id).addEventListener('input', function() {
     const agreed = document.getElementById('agree_disclaimer').checked;
     const name = document.getElementById('user_name').value.trim();

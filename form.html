@@ -542,7 +542,6 @@ input[type="range"] {
         <select id="acquisition_date_month" class="date-select" style="flex:1">
           <option value="">월 선택</option>
           <option value="0">모름</option>
-          <option value="0">모름</option>
           <option value="1">1월</option>
           <option value="2">2월</option>
           <option value="3">3월</option>
@@ -1671,7 +1670,7 @@ document.getElementById('agree_disclaimer').addEventListener('change', function(
   const email = document.getElementById('user_email').value.trim();
   document.getElementById('submitBtn').disabled = !(this.checked && name && email);
 });
-['user_name','user_email'].forEach(id = onchange="toggleDebt()"> {
+['user_name','user_email'].forEach(id => {
   document.getElementById(id).addEventListener('input', function() {
     const agreed = document.getElementById('agree_disclaimer').checked;
     const name = document.getElementById('user_name').value.trim();

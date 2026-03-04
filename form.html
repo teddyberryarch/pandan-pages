@@ -200,14 +200,28 @@ textarea { resize: vertical; min-height: 90px; }
   content: '✓'; font-size: 9px; color: var(--gold);
 }
 
+/* UNIT BADGE */
+.unit-badge {
+  display: inline-block;
+  font-size: 11px;
+  color: #888;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #333;
+  border-radius: 3px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  vertical-align: middle;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
 /* MONEY PREVIEW */
 .money-preview {
-  font-size: 19px;
-  color: var(--gold);
-  margin-top: 6px;
-  min-height: 24px;
+  font-size: 17px;
+  color: #444;
+  margin-top: 5px;
+  min-height: 22px;
   font-family: 'Noto Serif KR', serif;
-  letter-spacing: 0.02em;
 }
 
 /* DATE SELECT */
@@ -435,15 +449,15 @@ input[type="range"] {
   </div>
 
   <div class="field">
-    <label class="field-label required">현재 시장가치 (백만원 단위)</label>
-    <input type="text" id="current_value" placeholder="예: 1600 (16억), 850 (8억5천)" oninput="showMoneyPreview('current_value')">
+    <label class="field-label required">현재 시장가치 <span class="unit-badge">단위: 백만원</span></label>
+    <input type="text" id="current_value" placeholder="예: 1600" oninput="showMoneyPreview('current_value')">
     <div id="current_value_preview" class="money-preview"></div>
     <p class="field-hint">KB시세, 호가, 공시지가 중 가장 현실적인 금액 기준</p>
   </div>
 
   <div class="field">
     <label class="field-label required">취득가</label>
-    <input type="text" id="acquisition_price" placeholder="예: 500 (5억), 320 (3억2천)" oninput="showMoneyPreview('acquisition_price')">
+    <input type="text" id="acquisition_price" placeholder="예: 500" oninput="showMoneyPreview('acquisition_price')">
     <div id="acquisition_price_preview" class="money-preview"></div>
     <p class="field-hint">실제 구입금액 (취득세·부대비용 제외)</p>
   </div>
@@ -598,8 +612,8 @@ input[type="range"] {
     </div>
     <div class="conditional" id="cond_debt">
       <div class="field">
-        <label class="field-label">채무 잔액 (백만원 단위)</label>
-        <input type="text" id="debt_amount" placeholder="예: 200 (2억), 150 (1억5천)" oninput="showMoneyPreview('debt_amount')">
+        <label class="field-label">채무 잔액 <span class="unit-badge">단위: 백만원</span></label>
+        <input type="text" id="debt_amount" placeholder="예: 200" oninput="showMoneyPreview('debt_amount')">
     <div id="debt_amount_preview" class="money-preview"></div>
       </div>
     </div>
@@ -663,8 +677,8 @@ input[type="range"] {
     </div>
     <div class="conditional" id="cond_gift_acq">
       <div class="field">
-        <label class="field-label">취득 당시 증여/상속 평가액 (백만원 단위)</label>
-        <input type="text" id="gift_acq_value" placeholder="예: 400 (4억), 350 (3억5천)" oninput="showMoneyPreview('gift_acq_value')">
+        <label class="field-label">취득 당시 증여/상속 평가액 <span class="unit-badge">단위: 백만원</span></label>
+        <input type="text" id="gift_acq_value" placeholder="예: 400" oninput="showMoneyPreview('gift_acq_value')">
     <div id="gift_acq_value_preview" class="money-preview"></div>
         <p class="field-hint">취득 당시 기준시가 또는 감정평가액</p>
       </div>
@@ -700,7 +714,7 @@ input[type="range"] {
     </div>
     <div class="conditional" id="cond_redev">
       <div class="field">
-        <label class="field-label">종전주택(빌라/구축) 실제 매입가 (백만원 단위)</label>
+        <label class="field-label">종전주택 실제 매입가 <span class="unit-badge">단위: 백만원</span></label>
         <input type="text" id="redev_original_price" placeholder="예: 230" oninput="showMoneyPreview('redev_original_price')">
     <div id="redev_original_price_preview" class="money-preview"></div>
         <p class="field-hint">재개발 구역 내 집을 처음 살 때 지불한 금액</p>
@@ -712,17 +726,17 @@ input[type="range"] {
           <div class="radio-item"><input type="radio" name="redev_premium" id="rp2" value="없음" onchange="toggleRedevPremium()"><label for="rp2"><span class="radio-dot"></span>프리미엄 없음</label></div>
         </div>
         <div class="conditional" id="cond_redev_premium">
-          <input type="text" id="redev_premium_amount" placeholder="예: 200 (2억), 150 (1억5천)" oninput="showMoneyPreview('redev_premium_amount')">
+          <input type="text" id="redev_premium_amount" placeholder="예: 200" oninput="showMoneyPreview('redev_premium_amount')">
     <div id="redev_premium_amount_preview" class="money-preview"></div>
         </div>
       </div>
       <div class="field">
-        <label class="field-label">조합원 분양가 (백만원 단위)</label>
+        <label class="field-label">조합원 분양가 <span class="unit-badge">단위: 백만원</span></label>
         <input type="text" id="redev_allotment_price" placeholder="예: 580" oninput="showMoneyPreview('redev_allotment_price')">
     <div id="redev_allotment_price_preview" class="money-preview"></div>
       </div>
       <div class="field">
-        <label class="field-label">종전주택 감정평가 인정액 (백만원 단위)</label>
+        <label class="field-label">감정평가 인정액 (권리가액) <span class="unit-badge">단위: 백만원</span></label>
         <input type="text" id="redev_assessed_value" placeholder="예: 200" oninput="showMoneyPreview('redev_assessed_value')">
     <div id="redev_assessed_value_preview" class="money-preview"></div>
         <p class="field-hint">분양가에서 차감해주는 금액 (권리가액)</p>
@@ -1178,8 +1192,8 @@ input[type="range"] {
     </div>
     <div class="conditional" id="cond_gift_history">
       <div class="field">
-        <label class="field-label">기증여 합계 금액 (백만원 단위)</label>
-        <input type="text" id="gift_total" placeholder="예: 50 (5천만), 100 (1억)" oninput="showMoneyPreview('gift_total')">
+        <label class="field-label">기증여 합계 금액 <span class="unit-badge">단위: 백만원</span></label>
+        <input type="text" id="gift_total" placeholder="예: 50" oninput="showMoneyPreview('gift_total')">
     <div id="gift_total_preview" class="money-preview"></div>
         <p class="field-hint">증여세 합산과세 적용 (10년 이내 합산)</p>
       </div>
@@ -1203,8 +1217,8 @@ input[type="range"] {
     </div>
     <div class="conditional" id="cond_inheritance">
       <div class="field">
-        <label class="field-label">예상 상속 자산 규모 (만원, 부동산 포함)</label>
-        <input type="text" id="inheritance_value" placeholder="예: 2000 (20억), 1550 (15억5천)" oninput="showMoneyPreview('inheritance_value')">
+        <label class="field-label">예상 상속 자산 규모 <span class="unit-badge">단위: 백만원</span></label>
+        <input type="text" id="inheritance_value" placeholder="예: 2000" oninput="showMoneyPreview('inheritance_value')">
     <div id="inheritance_value_preview" class="money-preview"></div>
       </div>
       <div class="field">
@@ -1531,7 +1545,7 @@ function validateStep(step) {
   if (step === 1) {
     if (!document.querySelector('input[name="property_type"]:checked')) { alert('부동산 유형을 선택해주세요.'); return false; }
     if (!document.getElementById('location').value.trim()) { alert('소재지를 입력해주세요.'); return false; }
-    if (!document.getElementById('current_value').value) { alert('현재 시장가치 (백만원 단위)를 입력해주세요.'); return false; }
+    if (!document.getElementById('current_value').value) { alert('현재 시장가치 <span class="unit-badge">단위: 백만원</span>를 입력해주세요.'); return false; }
     if (!document.getElementById('acquisition_price').value) { alert('취득가를 입력해주세요.'); return false; }
     if (!document.getElementById('acquisition_date_year')?.value || !document.getElementById('acquisition_date_month')?.value) { alert('취득 연월을 선택해주세요.'); return false; }
     if (!document.querySelector('input[name="total_houses"]:checked')) { alert('보유 주택 수를 선택해주세요.'); return false; }
@@ -1677,17 +1691,19 @@ function showMoneyPreview(id) {
   if (!preview) return;
   const raw = el.value.trim();
   if (!raw) {
-    preview.textContent = '백만원 단위 — 예) 1600 = 16억';
+    preview.textContent = '숫자를 입력하면 금액이 표시됩니다';
     preview.style.color = '#444';
     return;
   }
   const manwon = parseInt(parseMoney(raw));
   if (manwon > 0) {
-    preview.textContent = '= ' + formatWon(manwon);
+    preview.textContent = '→ ' + formatWon(manwon);
     preview.style.color = 'var(--gold)';
+    preview.style.fontSize = '19px';
   } else {
     preview.textContent = '숫자를 입력해주세요';
     preview.style.color = '#e05c5c';
+    preview.style.fontSize = '14px';
   }
 }
 
@@ -1732,9 +1748,9 @@ function initMoneyHints() {
     const el = document.getElementById(id);
     if (!p) return;
     if (el && el.value) {
-      showMoneyPreview(id); // 저장된 값 있으면 변환해서 표시
+      showMoneyPreview(id);
     } else {
-      p.textContent = '백만원 단위 — 예) 1600 = 16억';
+      p.textContent = '숫자를 입력하면 금액이 표시됩니다';
       p.style.color = '#444';
     }
   });

@@ -1266,6 +1266,7 @@ input[type="range"] {
       <div class="check-item"><input type="checkbox" id="gift_to_child" value="자녀"><label for="gift_to_child"><span class="check-dot"></span>자녀</label></div>
       <div class="check-item"><input type="checkbox" id="gift_to_other" value="기타"><label for="gift_to_other"><span class="check-dot"></span>기타 친족</label></div>
       <div class="check-item"><input type="checkbox" id="gift_to_none" value="없음"><label for="gift_to_none"><span class="check-dot"></span>증여 고려 안 함</label></div>
+      <div class="check-item"><input type="checkbox" id="consider_low_transfer" value="저가양도"><label for="consider_low_transfer"><span class="check-dot"></span>가족간 저가양도 고려 중 (시세보다 낮게 파는 경우)</label></div>
     </div>
   </div>
 
@@ -1276,7 +1277,149 @@ input[type="range"] {
 
   <div class="btn-row">
     <button class="btn btn-prev" onclick="prevStep(5)">← 이전</button>
-    <button class="btn btn-save" id="saveBtn5" onclick="saveAndNext(5)">저장하고 다음 →</button>
+    <button class="btn btn-save" id="saveBtn5" onclick="saveAndNext('5b')">저장하고 다음 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     STEP 5B — 다주택 상세 정보
+════════════════════════════════════════════ -->
+<div class="step-section" id="step-5b">
+  <div class="step-title">다른 주택 상세 정보</div>
+  <div class="step-desc">보유 중인 다른 주택 각각의 정보를 입력해주세요. 어느 주택을 먼저 파는 게 유리한지 비교 분석합니다.</div>
+
+  <div class="notice">
+    주택마다 취득시기·거주기간·시세가 다르면 세금 차이가 크게 납니다.<br>
+    1채뿐이거나 다른 주택 정보가 없으면 건너뛰어도 됩니다.
+  </div>
+
+  <div id="other-houses-container">
+    <!-- 동적으로 추가됨 -->
+  </div>
+
+  <button type="button" onclick="addHouseCard()"
+    style="width:100%;margin-top:8px;background:transparent;border:1px dashed var(--gold);
+    color:var(--gold);font-size:14px;padding:14px;border-radius:8px;cursor:pointer;font-family:inherit;">
+    + 다른 주택 추가
+  </button>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevStep('5b')">← 이전</button>
+    <button class="btn btn-save" onclick="saveAndNext('5c')">저장하고 다음 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     STEP 5C — 수증자 / 양수인 정보
+════════════════════════════════════════════ -->
+<div class="step-section" id="step-5c">
+  <div class="step-title">수증자 / 양수인 정보</div>
+  <div class="step-desc">증여·부담부증여·저가양도를 고려 중이라면 받는 사람의 현황도 분석에 필요합니다. 해당 없으면 건너뛰세요.</div>
+
+  <!-- 배우자 증여 -->
+  <div class="field" id="field_recipient_spouse" style="display:none;">
+    <div class="field-label" style="color:var(--gold);font-size:15px;margin-bottom:16px;">💍 배우자 증여</div>
+
+    <label class="field-label">배우자 현재 주택 보유 수</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="recipient_spouse_houses" id="rsh0" value="0"><label for="rsh0"><span class="radio-dot"></span>없음</label></div>
+      <div class="radio-item"><input type="radio" name="recipient_spouse_houses" id="rsh1" value="1"><label for="rsh1"><span class="radio-dot"></span>1채</label></div>
+      <div class="radio-item"><input type="radio" name="recipient_spouse_houses" id="rsh2" value="2이상"><label for="rsh2"><span class="radio-dot"></span>2채 이상</label></div>
+    </div>
+
+    <label class="field-label" style="margin-top:16px;">배우자 10년 내 기증여 합계 <span class="unit-badge">단위: 백만원</span></label>
+    <input type="text" id="recipient_spouse_prior_gift" placeholder="예: 200 (없으면 0)" oninput="showMoneyPreview('recipient_spouse_prior_gift')">
+    <div id="recipient_spouse_prior_gift_preview" class="money-preview" style="font-size:15px;color:#555;margin-top:6px;min-height:20px;">숫자 입력 시 금액 표시</div>
+    <p class="field-hint">배우자 공제 6억원 — 10년 합산. 기증여가 있으면 공제 한도가 줄어듭니다.</p>
+  </div>
+
+  <!-- 자녀 증여 -->
+  <div class="field" id="field_recipient_child" style="display:none;">
+    <div class="field-label" style="color:var(--gold);font-size:15px;margin-bottom:16px;">👶 자녀 증여</div>
+
+    <label class="field-label">증여받을 자녀 나이</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="recipient_child_age" id="rca1" value="미성년" onchange="toggleChildMarriage()"><label for="rca1"><span class="radio-dot"></span>미성년 (만 19세 미만) — 공제 2천만원</label></div>
+      <div class="radio-item"><input type="radio" name="recipient_child_age" id="rca2" value="성년" onchange="toggleChildMarriage()"><label for="rca2"><span class="radio-dot"></span>성년 (만 19세 이상) — 공제 5천만원</label></div>
+    </div>
+
+    <label class="field-label" style="margin-top:16px;">자녀 혼인 여부</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="recipient_child_married" id="rcm1" value="미혼"><label for="rcm1"><span class="radio-dot"></span>미혼</label></div>
+      <div class="radio-item"><input type="radio" name="recipient_child_married" id="rcm2" value="기혼"><label for="rcm2"><span class="radio-dot"></span>기혼 — 혼인 공제 1억원 추가 가능</label></div>
+    </div>
+    <p class="field-hint" id="hint_child_marriage" style="display:none;">
+      ※ 혼인 전후 2년 이내 증여 시 1억원 추가 공제 가능 (2024년 신설, 상증세법 §53의2)
+    </p>
+
+    <label class="field-label" style="margin-top:16px;">자녀 현재 주택 보유 여부</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="recipient_child_houses" id="rchh0" value="없음"><label for="rchh0"><span class="radio-dot"></span>없음 (취득세 3.5%)</label></div>
+      <div class="radio-item"><input type="radio" name="recipient_child_houses" id="rchh1" value="1채"><label for="rchh1"><span class="radio-dot"></span>1채 보유 (취득세 8%)</label></div>
+      <div class="radio-item"><input type="radio" name="recipient_child_houses" id="rchh2" value="2채이상"><label for="rchh2"><span class="radio-dot"></span>2채 이상 (취득세 12%)</label></div>
+    </div>
+    <p class="field-hint">수증자 주택 수에 따라 취득세율이 달라집니다.</p>
+
+    <label class="field-label" style="margin-top:16px;">자녀 10년 내 기증여 합계 <span class="unit-badge">단위: 백만원</span></label>
+    <input type="text" id="recipient_child_prior_gift" placeholder="예: 30 (없으면 0)" oninput="showMoneyPreview('recipient_child_prior_gift')">
+    <div id="recipient_child_prior_gift_preview" class="money-preview" style="font-size:15px;color:#555;margin-top:6px;min-height:20px;">숫자 입력 시 금액 표시</div>
+  </div>
+
+  <!-- 부담부증여 상세 -->
+  <div class="field" id="field_burden_gift_detail" style="display:none;">
+    <div class="field-label" style="color:var(--gold);font-size:15px;margin-bottom:16px;">🏦 부담부증여 상세</div>
+
+    <label class="field-label">인수될 채무 종류</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="burden_type" id="bt1" value="전세보증금"><label for="bt1"><span class="radio-dot"></span>전세보증금 (세입자 있음)</label></div>
+      <div class="radio-item"><input type="radio" name="burden_type" id="bt2" value="담보대출"><label for="bt2"><span class="radio-dot"></span>담보대출 (은행 대출)</label></div>
+      <div class="radio-item"><input type="radio" name="burden_type" id="bt3" value="혼합"><label for="bt3"><span class="radio-dot"></span>전세보증금 + 담보대출 혼합</label></div>
+    </div>
+
+    <label class="field-label" style="margin-top:16px;">수증자(받는 사람) 소득 여부</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="recipient_income" id="ri1" value="있음"><label for="ri1"><span class="radio-dot"></span>소득 있음 — 채무 인수 가능</label></div>
+      <div class="radio-item"><input type="radio" name="recipient_income" id="ri2" value="없음_증여자부담"><label for="ri2"><span class="radio-dot"></span>소득 없음 — 실질적으로 증여자가 상환 예정</label></div>
+    </div>
+    <p class="field-hint">수증자가 실제로 채무를 상환하지 않으면 세무서에서 전액 증여로 볼 수 있습니다.</p>
+  </div>
+
+  <!-- 저가양도 (가족간 매매) -->
+  <div class="field" id="field_low_price_transfer" style="display:none;">
+    <div class="field-label" style="color:var(--gold);font-size:15px;margin-bottom:16px;">🔄 저가양도 (가족간 매매)</div>
+
+    <label class="field-label">매수자와의 관계</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="low_transfer_relation" id="ltr1" value="배우자"><label for="ltr1"><span class="radio-dot"></span>배우자</label></div>
+      <div class="radio-item"><input type="radio" name="low_transfer_relation" id="ltr2" value="직계존비속"><label for="ltr2"><span class="radio-dot"></span>직계존비속 (부모·자녀·조부모)</label></div>
+      <div class="radio-item"><input type="radio" name="low_transfer_relation" id="ltr3" value="형제자매"><label for="ltr3"><span class="radio-dot"></span>형제·자매</label></div>
+      <div class="radio-item"><input type="radio" name="low_transfer_relation" id="ltr4" value="기타친족"><label for="ltr4"><span class="radio-dot"></span>기타 친족 (3촌 이내)</label></div>
+    </div>
+
+    <label class="field-label" style="margin-top:16px;">예정 양도가 <span class="unit-badge">단위: 백만원</span></label>
+    <input type="text" id="low_transfer_price" placeholder="예: 800" oninput="showMoneyPreview('low_transfer_price')">
+    <div id="low_transfer_price_preview" class="money-preview" style="font-size:15px;color:#555;margin-top:6px;min-height:20px;">숫자 입력 시 금액 표시</div>
+    <p class="field-hint">
+      ※ 시가 대비 30% 이상 낮게 양도하면 차액을 증여로 과세합니다 (상증세법 §35).
+    </p>
+
+    <label class="field-label" style="margin-top:16px;">매수자 현재 주택 보유 수</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="low_transfer_buyer_houses" id="ltbh0" value="없음"><label for="ltbh0"><span class="radio-dot"></span>없음</label></div>
+      <div class="radio-item"><input type="radio" name="low_transfer_buyer_houses" id="ltbh1" value="1채"><label for="ltbh1"><span class="radio-dot"></span>1채</label></div>
+      <div class="radio-item"><input type="radio" name="low_transfer_buyer_houses" id="ltbh2" value="2채이상"><label for="ltbh2"><span class="radio-dot"></span>2채 이상</label></div>
+    </div>
+  </div>
+
+  <div id="field_recipient_none" style="display:none;">
+    <p class="field-hint" style="color:var(--dim);text-align:center;padding:20px 0;">
+      증여·저가양도를 고려 중이 아닌 경우 이 단계는 건너뛰어도 됩니다.
+    </p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevStep('5c')">← 이전</button>
+    <button class="btn btn-save" onclick="saveAndNext(6)">저장하고 다음 →</button>
   </div>
 </div>
 
@@ -1534,13 +1677,31 @@ function goStep(n) {
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
+// ── 스텝 순서 맵 (5b, 5c 포함)
+const STEP_ORDER = ['1','2','3','4','5','5b','5c','6','7'];
+function stepNext(id) {
+  const i = STEP_ORDER.indexOf(String(id));
+  return i >= 0 && i < STEP_ORDER.length - 1 ? STEP_ORDER[i+1] : null;
+}
+function stepPrev(id) {
+  const i = STEP_ORDER.indexOf(String(id));
+  return i > 0 ? STEP_ORDER[i-1] : null;
+}
+function stepNum(id) {
+  // 진행률 표시용 — 5b→5, 5c→5 로 취급
+  const map = {'1':1,'2':2,'3':3,'4':4,'5':5,'5b':5,'5c':5,'6':6,'7':7};
+  return map[String(id)] || parseInt(id) || 1;
+}
+
 function nextStep(from) {
   if (!validateStep(from)) return;
-  saveStep(from);  // 단계 넘어갈 때 자동저장
+  saveStep(from);
   showSaveToast(from);
+  const next = stepNext(from);
+  if (!next) return;
   document.getElementById(`step-${from}`).classList.remove('active');
-  currentStep = from + 1;
-  document.getElementById(`step-${currentStep}`).classList.add('active');
+  document.getElementById(`step-${next}`).classList.add('active');
+  currentStep = stepNum(next);
   updateProgress();
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
@@ -1564,11 +1725,12 @@ function showSaveToast(step) {
 }
 
 function prevStep(from) {
+  const prev = stepPrev(from);
+  if (!prev) return;
   document.getElementById(`step-${from}`).classList.remove('active');
-  currentStep = from - 1;
-  document.getElementById(`step-${currentStep}`).classList.add('active');
-  // 돌아온 단계 저장버튼 — 수정 가능 상태로
-  const btn = document.getElementById('saveBtn' + currentStep);
+  document.getElementById(`step-${prev}`).classList.add('active');
+  currentStep = stepNum(prev);
+  const btn = document.getElementById('saveBtn' + prev);
   if (btn) {
     btn.classList.remove('saved');
     btn.textContent = '저장하고 다음 →';
@@ -1781,10 +1943,12 @@ function saveAndNext(from) {
     btn.classList.add('saved');
     btn.textContent = '다음 단계로 →';
   }
+  const next = stepNext(from);
+  if (!next) return;
   setTimeout(() => {
     document.getElementById(`step-${from}`).classList.remove('active');
-    currentStep = from + 1;
-    document.getElementById(`step-${currentStep}`).classList.add('active');
+    document.getElementById(`step-${next}`).classList.add('active');
+    currentStep = stepNum(next);
     updateProgress();
     window.scrollTo({top: 0, behavior: 'smooth'});
   }, 300);
@@ -1946,6 +2110,221 @@ function showError(msg) {
   el.textContent = '⚠️ ' + msg;
   el.scrollIntoView({behavior:'smooth'});
 }
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  STEP 5B — 다주택 동적 카드
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+let houseCount = 0;
+
+function addHouseCard() {
+  houseCount++;
+  const n = houseCount;
+  const container = document.getElementById('other-houses-container');
+
+  const card = document.createElement('div');
+  card.id = `house-card-${n}`;
+  card.style.cssText = `
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+  `;
+
+  const yearOpts = Array.from({length:47}, (_,i) => {
+    const y = 1980 + i;
+    return `<option value="${y}">${y}년</option>`;
+  }).join('');
+
+  const monthOpts = ['모름','1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
+    .map((m,i) => `<option value="${i}">${m}</option>`).join('');
+
+  card.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <span style="color:var(--gold);font-weight:700;font-size:15px;">주택 ${n}</span>
+      <button onclick="removeHouseCard(${n})" style="background:none;border:none;color:var(--dim);
+        font-size:18px;cursor:pointer;padding:0 4px;">✕</button>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label class="field-label">소재지</label>
+      <input type="text" id="oh_location_${n}" placeholder="예: 서울 마포구 아현동"
+        style="width:100%;padding:10px 12px;background:var(--input-bg);border:1px solid var(--border);
+        border-radius:6px;color:var(--fg);font-size:14px;font-family:inherit;">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div>
+        <label class="field-label">취득 연도</label>
+        <select id="oh_acq_year_${n}" class="date-select" style="width:100%;">
+          <option value="">연도 선택</option>
+          ${yearOpts}
+        </select>
+      </div>
+      <div>
+        <label class="field-label">취득 월</label>
+        <select id="oh_acq_month_${n}" class="date-select" style="width:100%;">
+          ${monthOpts}
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label class="field-label">취득가 <span class="unit-badge">단위: 백만원</span></label>
+      <input type="text" id="oh_acq_price_${n}" placeholder="예: 450"
+        oninput="showMoneyPreview('oh_acq_price_${n}')"
+        style="width:100%;padding:10px 12px;background:var(--input-bg);border:1px solid var(--border);
+        border-radius:6px;color:var(--fg);font-size:14px;font-family:inherit;">
+      <div id="oh_acq_price_${n}_preview" class="money-preview"
+        style="font-size:13px;color:#888;margin-top:4px;min-height:18px;"></div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label class="field-label">현재 시세 <span class="unit-badge">단위: 백만원</span></label>
+      <input type="text" id="oh_cur_price_${n}" placeholder="예: 800"
+        oninput="showMoneyPreview('oh_cur_price_${n}')"
+        style="width:100%;padding:10px 12px;background:var(--input-bg);border:1px solid var(--border);
+        border-radius:6px;color:var(--fg);font-size:14px;font-family:inherit;">
+      <div id="oh_cur_price_${n}_preview" class="money-preview"
+        style="font-size:13px;color:#888;margin-top:4px;min-height:18px;"></div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label class="field-label">실거주 기간</label>
+      <div class="radio-group">
+        <div class="radio-item"><input type="radio" name="oh_residence_${n}" value="거주안함"><label><span class="radio-dot"></span>거주 안 함 (임대 중)</label></div>
+        <div class="radio-item"><input type="radio" name="oh_residence_${n}" value="2년미만"><label><span class="radio-dot"></span>2년 미만</label></div>
+        <div class="radio-item"><input type="radio" name="oh_residence_${n}" value="2년이상"><label><span class="radio-dot"></span>2년 이상</label></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label class="field-label">취득 당시 조정대상지역</label>
+      <div class="radio-group">
+        <div class="radio-item"><input type="radio" name="oh_adj_${n}" value="예"><label><span class="radio-dot"></span>예</label></div>
+        <div class="radio-item"><input type="radio" name="oh_adj_${n}" value="아니오"><label><span class="radio-dot"></span>아니오</label></div>
+        <div class="radio-item"><input type="radio" name="oh_adj_${n}" value="모름"><label><span class="radio-dot"></span>모름</label></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:6px;">
+      <label class="field-label">공동명의 여부</label>
+      <div class="radio-group">
+        <div class="radio-item"><input type="radio" name="oh_joint_${n}" value="단독명의"><label><span class="radio-dot"></span>단독명의</label></div>
+        <div class="radio-item"><input type="radio" name="oh_joint_${n}" value="공동명의"><label><span class="radio-dot"></span>공동명의</label></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:6px;">
+      <label class="field-label">임대 중 여부</label>
+      <div class="radio-group">
+        <div class="radio-item"><input type="radio" name="oh_rent_${n}" value="자가거주"><label><span class="radio-dot"></span>자가 거주</label></div>
+        <div class="radio-item"><input type="radio" name="oh_rent_${n}" value="임대중"><label><span class="radio-dot"></span>임대 중 (전세/월세)</label></div>
+        <div class="radio-item"><input type="radio" name="oh_rent_${n}" value="공실"><label><span class="radio-dot"></span>공실</label></div>
+      </div>
+    </div>
+  `;
+
+  container.appendChild(card);
+}
+
+function removeHouseCard(n) {
+  const card = document.getElementById(`house-card-${n}`);
+  if (card) card.remove();
+}
+
+// 다주택 카드 데이터 수집
+function collectOtherHouses() {
+  const houses = [];
+  for (let i = 1; i <= houseCount; i++) {
+    const card = document.getElementById(`house-card-${i}`);
+    if (!card) continue;
+    houses.push({
+      소재지:         document.getElementById(`oh_location_${i}`)?.value || '',
+      취득연도:       document.getElementById(`oh_acq_year_${i}`)?.value || '',
+      취득월:         document.getElementById(`oh_acq_month_${i}`)?.value || '',
+      취득가:         parseMoney(document.getElementById(`oh_acq_price_${i}`)?.value || ''),
+      현재시세:       parseMoney(document.getElementById(`oh_cur_price_${i}`)?.value || ''),
+      거주기간:       document.querySelector(`input[name="oh_residence_${i}"]:checked`)?.value || '',
+      조정지역:       document.querySelector(`input[name="oh_adj_${i}"]:checked`)?.value || '',
+      공동명의:       document.querySelector(`input[name="oh_joint_${i}"]:checked`)?.value || '',
+      임대여부:       document.querySelector(`input[name="oh_rent_${i}"]:checked`)?.value || '',
+    });
+  }
+  return houses;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  STEP 5C — 수증자 섹션 표시 로직
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function initRecipientSection() {
+  // Step 5에서 선택한 증여 대상 + 부담부증여 + 저가양도 여부 읽어서
+  // Step 5C 해당 섹션 표시/숨김
+  const giftToSpouse  = document.getElementById('gift_to_spouse')?.checked;
+  const giftToChild   = document.getElementById('gift_to_child')?.checked;
+  const burdenGift    = document.querySelector('input[name="burden_gift"]:checked')?.value === '고려중';
+  // 저가양도는 special_note 텍스트 기반이라 별도 체크박스 추가
+  const lowTransfer   = document.getElementById('consider_low_transfer')?.checked;
+
+  const show = (id, flag) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = flag ? 'block' : 'none';
+  };
+
+  show('field_recipient_spouse',     giftToSpouse);
+  show('field_recipient_child',      giftToChild);
+  show('field_burden_gift_detail',   burdenGift);
+  show('field_low_price_transfer',   lowTransfer);
+
+  // 아무것도 해당 없으면 안내 메시지
+  const noneVisible = !giftToSpouse && !giftToChild && !burdenGift && !lowTransfer;
+  show('field_recipient_none', noneVisible);
+}
+
+// Step 5C 진입 시 자동 실행
+const _origSaveAndNext = saveAndNext;
+document.addEventListener('DOMContentLoaded', () => {
+  // Step 5 → 5b 버튼에 이벤트 없음 (onclick으로 처리됨)
+  // Step 5b → 5c 진입 시 수증자 섹션 초기화
+  const btn5b = document.querySelector('#step-5b .btn-save');
+  if (btn5b) {
+    const orig = btn5b.getAttribute('onclick');
+    btn5b.addEventListener('click', initRecipientSection);
+  }
+});
+
+function toggleChildMarriage() {
+  const age = document.querySelector('input[name="recipient_child_age"]:checked')?.value;
+  const hint = document.getElementById('hint_child_marriage');
+  if (hint) hint.style.display = age === '성년' ? 'block' : 'none';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//  저가양도 고려 체크박스 — Step 5 특수상황에 추가
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// collectData에 other_houses, 수증자 데이터 합산
+const _origCollectData = collectData;
+function collectData() {
+  const base = _origCollectData();
+  base.other_houses = collectOtherHouses();
+  base.recipient_spouse_houses      = document.querySelector('input[name="recipient_spouse_houses"]:checked')?.value || '';
+  base.recipient_spouse_prior_gift  = parseMoney(document.getElementById('recipient_spouse_prior_gift')?.value || '');
+  base.recipient_child_age          = document.querySelector('input[name="recipient_child_age"]:checked')?.value || '';
+  base.recipient_child_married      = document.querySelector('input[name="recipient_child_married"]:checked')?.value || '';
+  base.recipient_child_houses       = document.querySelector('input[name="recipient_child_houses"]:checked')?.value || '';
+  base.recipient_child_prior_gift   = parseMoney(document.getElementById('recipient_child_prior_gift')?.value || '');
+  base.burden_type                  = document.querySelector('input[name="burden_type"]:checked')?.value || '';
+  base.recipient_income             = document.querySelector('input[name="recipient_income"]:checked')?.value || '';
+  base.low_transfer_relation        = document.querySelector('input[name="low_transfer_relation"]:checked')?.value || '';
+  base.low_transfer_price           = parseMoney(document.getElementById('low_transfer_price')?.value || '');
+  base.low_transfer_buyer_houses    = document.querySelector('input[name="low_transfer_buyer_houses"]:checked')?.value || '';
+  return base;
+}
+
 </script>
 </body>
 </html>

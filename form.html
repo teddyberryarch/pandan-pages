@@ -3,910 +3,1078 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>판단 — 부동산 의사결정 리포트</title>
+<title>결정 — 보유 부동산 의사결정 리포트</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0f0e0b;
-    --surface: #1a1916;
-    --border: #2e2c27;
-    --border-active: #c9a84c;
-    --text: #f0ebe0;
-    --text-muted: #8a8270;
-    --text-dim: #4a4840;
-    --gold: #c9a84c;
-    --gold-light: #e8c97a;
-    --gold-pale: rgba(201,168,76,0.08);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-weight: 300;
-    font-size: 21px;
-    line-height: 1.8;
-    padding-bottom: 80px;
-  }
-
-  /* 배경 별 */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(1px 1px at 15% 20%, rgba(201,168,76,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 35% 60%, rgba(255,255,255,0.2) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 60% 15%, rgba(201,168,76,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 80% 45%, rgba(255,255,255,0.2) 0%, transparent 100%),
-      radial-gradient(1px 1px at 90% 75%, rgba(201,168,76,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 25% 85%, rgba(255,255,255,0.15) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 660px;
-    margin: 0 auto;
-    padding: 72px 28px 0;
-  }
-
-  /* 헤더 */
-  .header {
-    text-align: center;
-    margin-bottom: 56px;
-  }
-
-  .header-tag {
-    font-size: 21px;
-    letter-spacing: 0.4em;
-    color: var(--gold);
-    opacity: 0.7;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  .header h1 {
-    font-family: 'Noto Serif KR', serif;
-    font-size: clamp(32px, 6vw, 48px);
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 8px;
-    letter-spacing: 0.1em;
-  }
-
-  .header-divider {
-    width: 40px;
-    height: 1px;
-    background: var(--gold);
-    margin: 20px auto;
-    opacity: 0.5;
-  }
-
-  .header-sub {
-    font-size: 19px;
-    color: var(--text-muted);
-    line-height: 1.9;
-  }
-
-  /* 카드 */
-  .card {
-    background: rgba(255,255,255,0.025);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 48px 44px;
-    backdrop-filter: blur(12px);
-  }
-
-  @media (max-width: 500px) { .card { padding: 32px 24px; } }
-
-  /* 섹션 */
-  .section-label {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 19px;
-    letter-spacing: 0.3em;
-    color: var(--gold-light);
-    text-transform: uppercase;
-    margin-bottom: 28px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-weight: 500;
-  }
-
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .section-gap { margin-bottom: 40px; }
-
-  /* 필드 */
-  .field { margin-bottom: 24px; }
-
-  .field-label {
-    display: block;
-    font-size: 26px;
-    letter-spacing: 0.1em;
-    color: var(--gold-light);
-    margin-bottom: 10px;
-    font-weight: 400;
-  }
-
-  .field-label .opt {
-    color: rgba(240,235,224,0.55);
-    font-size: 21px;
-    margin-left: 4px;
-  }
-
-  .field-note {
-    font-size: 19px;
-    color: rgba(240,235,224,0.6);
-    font-weight: 400;
-    margin-bottom: 10px;
-    line-height: 1.6;
-  }
-
-  input[type="text"],
-  input[type="number"],
-  input[type="email"],
-  input[type="tel"],
-  select,
-  textarea {
-    width: 100%;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    border-radius: 1px;
-    color: var(--text);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 19px;
-    font-weight: 300;
-    padding: 16px 18px;
-    outline: none;
-    transition: border-color 0.25s, background 0.25s;
-    -webkit-appearance: none;
-  }
-
-  input::placeholder, textarea::placeholder {
-    color: rgba(255,255,255,0.2);
-    font-size: 21px;
-  }
-
-  input:focus, select:focus, textarea:focus {
-    border-color: rgba(201,168,76,0.6);
-    background: var(--gold-pale);
-  }
-
-  select {
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8270' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 42px;
-  }
-
-  select option { background: #1a1916; }
-
-  textarea {
-    resize: vertical;
-    min-height: 130px;
-    line-height: 1.8;
-  }
-
-  /* 그리드 */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-
-  /* 라디오 */
-  .radio-group { display: flex; flex-wrap: wrap; gap: 8px; }
-  .radio-group.col { flex-direction: column; gap: 8px; }
-
-  .radio-item { position: relative; }
-  .radio-item input { position: absolute; opacity: 0; width: 0; height: 0; }
-
-  .radio-item label {
-    display: block;
-    padding: 12px 18px;
-    border: 1px solid var(--border);
-    border-radius: 1px;
-    font-size: 21px;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
-    background: rgba(255,255,255,0.03);
-    white-space: nowrap;
-  }
-
-  .radio-item input:checked + label {
-    border-color: var(--gold);
-    color: var(--gold-light);
-    background: var(--gold-pale);
-  }
-
-  .radio-item label:hover {
-    border-color: rgba(201,168,76,0.4);
-    color: var(--text);
-  }
-
-  /* 가족 구성원 추가 */
-  .family-list { margin-bottom: 14px; }
-
-  .family-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    border: 1px solid var(--border);
-    border-radius: 1px;
-    margin-bottom: 8px;
-    background: rgba(255,255,255,0.03);
-    font-size: 21px;
-    color: var(--text-muted);
-  }
-
-  .family-remove {
-    margin-left: auto;
-    background: none;
-    border: none;
-    color: rgba(240,235,224,0.55);
-    cursor: pointer;
-    font-size: 19px;
-    transition: color 0.2s;
-  }
-
-  .family-remove:hover { color: #c0392b; }
-
-  .btn-add-family {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 18px;
-    border: 1px dashed var(--border);
-    background: transparent;
-    color: rgba(240,235,224,0.55);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 26px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-radius: 1px;
-    width: 100%;
-    justify-content: center;
-  }
-
-  .btn-add-family:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-
-  /* 가족 추가 모달 */
-  .family-modal {
-    display: none;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 24px;
-    margin-top: 10px;
-  }
-
-  .family-modal.show { display: block; }
-
-  .family-modal-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
-
-  .family-modal label {
-    font-size: 19px;
-    color: rgba(240,235,224,0.55);
-    display: block;
-    margin-bottom: 6px;
-  }
-
-  .checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 26px;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 8px 0;
-  }
-
-  .checkbox-item input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    padding: 0;
-    border: 1px solid var(--border);
-    background: transparent;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .btn-confirm-family {
-    width: 100%;
-    padding: 12px;
-    background: rgba(201,168,76,0.15);
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 26px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-radius: 1px;
-    margin-top: 4px;
-  }
-
-  .btn-confirm-family:hover {
-    background: rgba(201,168,76,0.25);
-  }
-
-  /* 안내 박스 */
-  .notice {
-    background: var(--gold-pale);
-    border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 1px;
-    padding: 18px 22px;
-    font-size: 21px;
-    color: rgba(240,235,224,0.7);
-    line-height: 1.8;
-    margin-top: 12px;
-  }
-
-  /* 제출 버튼 */
-  .btn-submit {
-    width: 100%;
-    padding: 20px;
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: 'Noto Serif KR', serif;
-    font-size: 21px;
-    font-weight: 400;
-    border-radius: 1px;
-    cursor: pointer;
-    transition: all 0.3s;
-    letter-spacing: 0.15em;
-    margin-top: 36px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-submit::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--gold);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.35s ease;
-    z-index: 0;
-  }
-
-  .btn-submit:hover::before { transform: scaleX(1); }
-
-  .btn-submit span {
-    position: relative;
-    z-index: 1;
-    transition: color 0.3s;
-  }
-
-  .btn-submit:hover span { color: #0f0e0b; }
-
-  /* 오류 */
-  .error-msg {
-    color: #e05050;
-    font-size: 26px;
-    margin-top: 14px;
-    display: none;
-  }
-
-  /* 완료 화면 */
-  .done {
-    display: none;
-    text-align: center;
-    padding: 60px 20px;
-    animation: fadeUp 0.5s ease;
-  }
-
-  .done.show { display: block; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .done-icon {
-    display: block;
-    font-size: 28px;
-    color: var(--gold);
-    margin-bottom: 24px;
-    letter-spacing: 0.4em;
-  }
-
-  .done-title {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 26px;
-    color: var(--text);
-    margin-bottom: 16px;
-    font-weight: 400;
-  }
-
-  .done-title em {
-    font-style: normal;
-    color: var(--gold);
-  }
-
-  .done-body {
-    font-size: 19px;
-    color: var(--text-muted);
-    line-height: 1.9;
-    margin-bottom: 36px;
-  }
-
-  /* 결제 */
-  .payment-box {
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 12px;
-  }
-
-  .payment-header {
-    background: var(--gold-pale);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .payment-header .p-label { font-size: 26px; color: var(--gold); }
-  .payment-header .p-price {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 26px;
-    color: var(--gold);
-  }
-
-  .payment-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-
-  .btn-toss {
-    width: 100%;
-    padding: 15px;
-    background: #3182f6;
-    color: white;
-    border: none;
-    border-radius: 2px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 19px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-
-  .btn-toss:hover { opacity: 0.9; }
-
-  .btn-kakao {
-    width: 100%;
-    padding: 15px;
-    background: #fee500;
-    color: #191919;
-    border: none;
-    border-radius: 2px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 19px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-
-  .btn-kakao:hover { opacity: 0.9; }
-
-  .payment-note {
-    text-align: center;
-    font-size: 19px;
-    color: rgba(240,235,224,0.55);
-    margin-top: 4px;
-  }
-
-  /* 푸터 */
-  .footer {
-    text-align: center;
-    margin-top: 48px;
-    font-size: 19px;
-    color: rgba(240,235,224,0.55);
-    letter-spacing: 0.05em;
-    line-height: 1.8;
-  }
-
-  @media (max-width: 480px) {
-    .grid-2 { grid-template-columns: 1fr; }
-    .grid-3 { grid-template-columns: 1fr 1fr; }
-    .family-modal-grid { grid-template-columns: 1fr; }
-  }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg: #0f0f0d;
+  --surface: #1a1a17;
+  --border: rgba(201,168,76,0.15);
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.4);
+  --fg: #e8e4d8;
+  --dim: rgba(232,228,216,0.45);
+  --danger: #e05c5c;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;
+  line-height: 1.7;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  padding: 80px 24px 60px;
+  border-bottom: 1px solid var(--border);
+}
+.header-tag {
+  font-size: 11px; letter-spacing: .4em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 24px;
+}
+.header h1 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(42px, 8vw, 80px);
+  font-weight: 300; letter-spacing: -.02em;
+  color: var(--fg); margin-bottom: 20px;
+}
+.header-sub {
+  font-size: 15px; color: var(--dim); line-height: 2;
+}
+.header-price {
+  display: inline-block; margin-top: 28px;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 22px; color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 10px 32px; border-radius: 2px;
+}
+
+/* PROGRESS */
+.progress-wrap {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(15,15,13,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 40px;
+  display: flex; align-items: center; gap: 0;
+}
+.progress-step {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; letter-spacing: .12em;
+  color: var(--dim); flex: 1;
+  cursor: pointer; transition: color .3s;
+}
+.progress-step.active { color: var(--gold); }
+.progress-step.done { color: var(--fg); }
+.step-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; flex-shrink: 0;
+  transition: background .3s;
+}
+.progress-step.active .step-num { background: var(--gold); border-color: var(--gold); color: #0f0f0d; }
+.progress-step.done .step-num { background: var(--fg); border-color: var(--fg); color: #0f0f0d; }
+.step-line { flex: 1; height: 1px; background: var(--border); margin: 0 8px; }
+.step-line.done { background: var(--gold-dim); }
+
+/* FORM CONTAINER */
+.form-wrap { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+
+/* STEP SECTION */
+.step-section {
+  display: none;
+  padding: 60px 0 40px;
+  animation: fadeUp .5s cubic-bezier(.16,1,.3,1) forwards;
+}
+.step-section.active { display: block; }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.step-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 26px; font-weight: 300;
+  color: var(--fg); margin-bottom: 8px;
+}
+.step-desc {
+  font-size: 13px; color: var(--dim);
+  margin-bottom: 40px; line-height: 1.8;
+}
+
+/* FIELD */
+.field { margin-bottom: 32px; }
+.field-label {
+  display: block; font-size: 13px; letter-spacing: .06em;
+  color: var(--dim); margin-bottom: 10px;
+}
+.field-label.required::after {
+  content: ' *'; color: var(--gold); font-size: 11px;
+}
+.field-hint {
+  font-size: 11px; color: rgba(232,228,216,0.3);
+  margin-top: 6px; line-height: 1.6;
+}
+
+/* INPUT */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--fg);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  padding: 14px 18px;
+  outline: none;
+  transition: border-color .3s;
+  -webkit-appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+}
+input::placeholder, textarea::placeholder { color: var(--dim); }
+select option { background: var(--surface); }
+textarea { resize: vertical; min-height: 90px; }
+
+/* RADIO / CHECKBOX GROUP */
+.radio-group, .check-group {
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.radio-group.col, .check-group.col {
+  flex-direction: column; gap: 8px;
+}
+.radio-item, .check-item {
+  position: relative;
+}
+.radio-item input, .check-item input {
+  position: absolute; opacity: 0; width: 0; height: 0;
+}
+.radio-item label, .check-item label {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 14px; color: var(--dim);
+  cursor: pointer; transition: all .25s;
+  min-width: 120px;
+}
+.radio-item input:checked + label,
+.check-item input:checked + label {
+  border-color: var(--gold);
+  color: var(--fg);
+  background: rgba(201,168,76,0.06);
+}
+.radio-dot, .check-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1px solid currentColor; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.check-dot { border-radius: 3px; }
+.radio-item input:checked + label .radio-dot::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); display: block;
+}
+.check-item input:checked + label .check-dot::after {
+  content: '✓'; font-size: 9px; color: var(--gold);
+}
+
+/* CONDITIONAL BLOCK */
+.conditional {
+  display: none;
+  border-left: 2px solid var(--gold-dim);
+  padding-left: 24px;
+  margin-top: 16px;
+}
+.conditional.show { display: block; }
+
+/* DIVIDER */
+.field-divider {
+  height: 1px; background: var(--border);
+  margin: 36px 0;
+}
+
+/* RANGE */
+.range-wrap { display: flex; align-items: center; gap: 16px; }
+input[type="range"] {
+  flex: 1; background: transparent; border: none; padding: 0;
+  accent-color: var(--gold);
+}
+.range-val {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 18px; color: var(--gold); min-width: 60px; text-align: right;
+}
+
+/* BUTTONS */
+.btn-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 40px; border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+.btn {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px; letter-spacing: .25em;
+  padding: 14px 36px; border-radius: 2px;
+  cursor: pointer; transition: all .3s;
+  border: 1px solid;
+}
+.btn-prev {
+  background: transparent; border-color: var(--border);
+  color: var(--dim);
+}
+.btn-prev:hover { border-color: var(--fg); color: var(--fg); }
+.btn-next {
+  background: var(--gold); border-color: var(--gold);
+  color: #0f0f0d; font-weight: 500;
+}
+.btn-next:hover { background: #e0ba5a; border-color: #e0ba5a; }
+.btn-submit {
+  background: var(--gold); border-color: var(--gold);
+  color: #0f0f0d; font-weight: 500;
+  width: 100%; padding: 18px;
+  font-size: 14px; letter-spacing: .2em;
+}
+.btn-submit:hover { background: #e0ba5a; }
+.btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ERROR */
+.error-msg {
+  display: none; color: var(--danger);
+  font-size: 12px; margin-top: 6px;
+}
+.field.has-error input,
+.field.has-error select,
+.field.has-error textarea { border-color: var(--danger); }
+.field.has-error .error-msg { display: block; }
+
+/* SUCCESS */
+.success-screen {
+  display: none; text-align: center;
+  padding: 100px 24px;
+}
+.success-screen.show { display: block; }
+.success-icon {
+  font-size: 48px; margin-bottom: 32px;
+}
+.success-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 32px; font-weight: 300;
+  color: var(--fg); margin-bottom: 16px;
+}
+.success-desc { font-size: 15px; color: var(--dim); line-height: 2; }
+
+/* NOTICE BOX */
+.notice {
+  background: rgba(201,168,76,0.06);
+  border: 1px solid var(--gold-dim);
+  border-radius: 3px;
+  padding: 16px 20px;
+  font-size: 13px; color: var(--dim);
+  margin-bottom: 28px; line-height: 1.8;
+}
+.notice strong { color: var(--gold); }
+
+@media(max-width: 600px) {
+  .progress-wrap { padding: 12px 16px; }
+  .progress-step span { display: none; }
+  .header { padding: 60px 20px 40px; }
+  .radio-group { flex-direction: column; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div class="header">
-    <div class="header-tag">부동산 · 세금 의사결정 리포트</div>
-    <h1>판단</h1>
-    <div class="header-divider"></div>
-    <p class="header-sub">
-      판을 읽고, 결단을 내린다.<br>
-      팔아야 하나, 버텨야 하나, 증여해야 하나.<br>
-      세금 숫자로 최적 경로를 설계해드립니다.
+<div class="header">
+  <div class="header-tag">베러비전 · 부동산 의사결정</div>
+  <h1>결정</h1>
+  <p class="header-sub">
+    이미 부동산을 가진 사람이<br>
+    "지금 어떻게 해야 하나"를 결정할 수 있게 도와드립니다.<br>
+    예측이 아닙니다. 지금 가진 것의 최적화입니다.
+  </p>
+  <div class="header-price">149,000원</div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap" id="progressBar">
+  <div class="progress-step active" data-step="1" onclick="goStep(1)">
+    <div class="step-num">1</div>
+    <span>기본 정보</span>
+  </div>
+  <div class="step-line" id="line-1"></div>
+  <div class="progress-step" data-step="2" onclick="goStep(2)">
+    <div class="step-num">2</div>
+    <span>보유 현황</span>
+  </div>
+  <div class="step-line" id="line-2"></div>
+  <div class="progress-step" data-step="3" onclick="goStep(3)">
+    <div class="step-num">3</div>
+    <span>취득 상황</span>
+  </div>
+  <div class="step-line" id="line-3"></div>
+  <div class="progress-step" data-step="4" onclick="goStep(4)">
+    <div class="step-num">4</div>
+    <span>세대·거주</span>
+  </div>
+  <div class="step-line" id="line-4"></div>
+  <div class="progress-step" data-step="5" onclick="goStep(5)">
+    <div class="step-num">5</div>
+    <span>특수 상황</span>
+  </div>
+  <div class="step-line" id="line-5"></div>
+  <div class="progress-step" data-step="6" onclick="goStep(6)">
+    <div class="step-num">6</div>
+    <span>원하는 결과</span>
+  </div>
+  <div class="step-line" id="line-6"></div>
+  <div class="progress-step" data-step="7" onclick="goStep(7)">
+    <div class="step-num">7</div>
+    <span>연락처</span>
+  </div>
+</div>
+
+<div class="form-wrap">
+
+<!-- ═══════════════════════════════════════════
+     STEP 1 — 기본 정보
+════════════════════════════════════════════ -->
+<div class="step-section active" id="step-1">
+  <div class="step-title">보유 부동산 기본 정보</div>
+  <div class="step-desc">분석 대상 부동산의 기본 현황을 입력해 주세요.</div>
+
+  <div class="field">
+    <label class="field-label required">부동산 유형</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="property_type" id="pt1" value="아파트"><label for="pt1"><span class="radio-dot"></span>아파트</label></div>
+      <div class="radio-item"><input type="radio" name="property_type" id="pt2" value="빌라/연립"><label for="pt2"><span class="radio-dot"></span>빌라/연립</label></div>
+      <div class="radio-item"><input type="radio" name="property_type" id="pt3" value="단독주택"><label for="pt3"><span class="radio-dot"></span>단독주택</label></div>
+      <div class="radio-item"><input type="radio" name="property_type" id="pt4" value="오피스텔"><label for="pt4"><span class="radio-dot"></span>오피스텔</label></div>
+      <div class="radio-item"><input type="radio" name="property_type" id="pt5" value="상가/업무용"><label for="pt5"><span class="radio-dot"></span>상가/업무용</label></div>
+      <div class="radio-item"><input type="radio" name="property_type" id="pt6" value="토지"><label for="pt6"><span class="radio-dot"></span>토지</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">소재지 (시/구 수준)</label>
+    <input type="text" id="location" placeholder="예: 서울시 강남구, 경기도 성남시 분당구">
+  </div>
+
+  <div class="field">
+    <label class="field-label required">현재 시장가치 (만원)</label>
+    <input type="number" id="current_value" placeholder="예: 80000 (8억)">
+    <p class="field-hint">KB시세, 호가, 공시지가 중 가장 현실적인 금액 기준</p>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">취득가 (만원)</label>
+    <input type="number" id="acquisition_price" placeholder="예: 50000 (5억)">
+    <p class="field-hint">실제 구입금액 (취득세·부대비용 제외)</p>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">취득 연월</label>
+    <input type="text" id="acquisition_date" placeholder="예: 2018년 3월">
+  </div>
+
+  <div class="field">
+    <label class="field-label required">전체 보유 주택 수 (본인 + 배우자 합산, 전국 기준)</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="total_houses" id="th1" value="1" onchange="toggleMultiHouse()"><label for="th1"><span class="radio-dot"></span>1주택</label></div>
+      <div class="radio-item"><input type="radio" name="total_houses" id="th2" value="2" onchange="toggleMultiHouse()"><label for="th2"><span class="radio-dot"></span>2주택</label></div>
+      <div class="radio-item"><input type="radio" name="total_houses" id="th3" value="3" onchange="toggleMultiHouse()"><label for="th3"><span class="radio-dot"></span>3주택 이상</label></div>
+    </div>
+
+    <!-- 다주택 시 -->
+    <div class="conditional" id="cond_multi_house">
+      <div class="field">
+        <label class="field-label">다른 주택들의 소재지 및 취득연도 (간략히)</label>
+        <textarea id="other_houses" placeholder="예: 경기도 수원시 2020년 취득, 서울 노원구 2015년 취득"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">일시적 2주택 해당 여부</label>
+        <div class="radio-group">
+          <div class="radio-item"><input type="radio" name="temp_2house" id="t2h1" value="해당"><label for="t2h1"><span class="radio-dot"></span>해당 (신규 취득 후 3년 내 처분 예정)</label></div>
+          <div class="radio-item"><input type="radio" name="temp_2house" id="t2h2" value="해당없음"><label for="t2h2"><span class="radio-dot"></span>해당 없음</label></div>
+          <div class="radio-item"><input type="radio" name="temp_2house" id="t2h3" value="모름"><label for="t2h3"><span class="radio-dot"></span>잘 모름</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">공동명의 여부</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="joint_ownership" id="jo1" value="단독명의"><label for="jo1"><span class="radio-dot"></span>단독명의</label></div>
+      <div class="radio-item"><input type="radio" name="joint_ownership" id="jo2" value="배우자공동명의"><label for="jo2"><span class="radio-dot"></span>배우자 공동명의</label></div>
+      <div class="radio-item"><input type="radio" name="joint_ownership" id="jo3" value="기타공동명의"><label for="jo3"><span class="radio-dot"></span>기타 공동명의</label></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <div></div>
+    <button class="btn btn-next" onclick="nextStep(1)">다음 단계 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     STEP 2 — 보유 현황
+════════════════════════════════════════════ -->
+<div class="step-section" id="step-2">
+  <div class="step-title">보유 현황</div>
+  <div class="step-desc">현재 이 부동산을 어떻게 사용하고 있는지 알려주세요.</div>
+
+  <div class="field">
+    <label class="field-label required">현재 사용 형태</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="usage" id="u1" value="본인거주"><label for="u1"><span class="radio-dot"></span>본인 거주 중</label></div>
+      <div class="radio-item"><input type="radio" name="usage" id="u2" value="임대중"><label for="u2"><span class="radio-dot"></span>임대 중 (전세/월세)</label></div>
+      <div class="radio-item"><input type="radio" name="usage" id="u3" value="공실"><label for="u3"><span class="radio-dot"></span>공실 (비어있음)</label></div>
+      <div class="radio-item"><input type="radio" name="usage" id="u4" value="가족거주"><label for="u4"><span class="radio-dot"></span>가족 거주 (본인 미거주)</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">실제 거주 기간 (본인 기준, 누적)</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="residence_years" id="ry0" value="미거주"><label for="ry0"><span class="radio-dot"></span>거주 안 함</label></div>
+      <div class="radio-item"><input type="radio" name="residence_years" id="ry1" value="1년미만"><label for="ry1"><span class="radio-dot"></span>1년 미만</label></div>
+      <div class="radio-item"><input type="radio" name="residence_years" id="ry2" value="1~2년"><label for="ry2"><span class="radio-dot"></span>1~2년</label></div>
+      <div class="radio-item"><input type="radio" name="residence_years" id="ry3" value="2~3년"><label for="ry3"><span class="radio-dot"></span>2~3년</label></div>
+      <div class="radio-item"><input type="radio" name="residence_years" id="ry4" value="3~5년"><label for="ry4"><span class="radio-dot"></span>3~5년</label></div>
+      <div class="radio-item"><input type="radio" name="residence_years" id="ry5" value="5~10년"><label for="ry5"><span class="radio-dot"></span>5~10년</label></div>
+      <div class="radio-item"><input type="radio" name="residence_years" id="ry6" value="10년이상"><label for="ry6"><span class="radio-dot"></span>10년 이상</label></div>
+    </div>
+    <p class="field-hint">2017년 8월 이후 취득 1주택은 거주 2년 이상이어야 비과세 가능</p>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">현재 담보대출/채무 여부</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="has_debt" id="hd1" value="없음"><label for="hd1"><span class="radio-dot"></span>없음</label></div>
+      <div class="radio-item"><input type="radio" name="has_debt" id="hd2" value="있음" onchange="toggleDebt()"><label for="hd2"><span class="radio-dot"></span>있음</label></div>
+    </div>
+    <div class="conditional" id="cond_debt">
+      <div class="field">
+        <label class="field-label">채무 잔액 (만원)</label>
+        <input type="number" id="debt_amount" placeholder="예: 20000 (2억)">
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">임대사업자 등록 여부</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="rental_business" id="rb1" value="미등록"><label for="rb1"><span class="radio-dot"></span>미등록</label></div>
+      <div class="radio-item"><input type="radio" name="rental_business" id="rb2" value="등록" onchange="toggleRental()"><label for="rb2"><span class="radio-dot"></span>등록</label></div>
+      <div class="radio-item"><input type="radio" name="rental_business" id="rb3" value="말소"><label for="rb3"><span class="radio-dot"></span>등록 후 말소</label></div>
+    </div>
+    <div class="conditional" id="cond_rental">
+      <div class="field">
+        <label class="field-label">의무임대기간 잔여 여부</label>
+        <div class="radio-group">
+          <div class="radio-item"><input type="radio" name="rental_obligation" id="ro1" value="남음"><label for="ro1"><span class="radio-dot"></span>의무기간 남아있음</label></div>
+          <div class="radio-item"><input type="radio" name="rental_obligation" id="ro2" value="완료"><label for="ro2"><span class="radio-dot"></span>의무기간 완료</label></div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">등록 유형</label>
+        <div class="radio-group">
+          <div class="radio-item"><input type="radio" name="rental_type" id="rt1" value="장기일반"><label for="rt1"><span class="radio-dot"></span>장기일반 민간임대</label></div>
+          <div class="radio-item"><input type="radio" name="rental_type" id="rt2" value="단기"><label for="rt2"><span class="radio-dot"></span>단기 민간임대</label></div>
+          <div class="radio-item"><input type="radio" name="rental_type" id="rt3" value="모름"><label for="rt3"><span class="radio-dot"></span>잘 모름</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">법인 보유 여부</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="corp_owned" id="co1" value="개인"><label for="co1"><span class="radio-dot"></span>개인 명의</label></div>
+      <div class="radio-item"><input type="radio" name="corp_owned" id="co2" value="법인"><label for="co2"><span class="radio-dot"></span>법인 명의</label></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevStep(2)">← 이전</button>
+    <button class="btn btn-next" onclick="nextStep(2)">다음 단계 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     STEP 3 — 취득 상황
+════════════════════════════════════════════ -->
+<div class="step-section" id="step-3">
+  <div class="step-title">취득 당시 상황</div>
+  <div class="step-desc">부동산을 취득할 때의 상황입니다. 세금 계산에 중요한 영향을 줍니다.</div>
+
+  <div class="field">
+    <label class="field-label required">취득 방법</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="acquisition_method" id="am1" value="매매"><label for="am1"><span class="radio-dot"></span>매매 (직접 구입)</label></div>
+      <div class="radio-item"><input type="radio" name="acquisition_method" id="am2" value="증여" onchange="toggleGiftAcq()"><label for="am2"><span class="radio-dot"></span>증여로 취득</label></div>
+      <div class="radio-item"><input type="radio" name="acquisition_method" id="am3" value="상속" onchange="toggleGiftAcq()"><label for="am3"><span class="radio-dot"></span>상속으로 취득</label></div>
+      <div class="radio-item"><input type="radio" name="acquisition_method" id="am4" value="분양"><label for="am4"><span class="radio-dot"></span>분양 (신규 분양)</label></div>
+      <div class="radio-item"><input type="radio" name="acquisition_method" id="am5" value="입주권"><label for="am5"><span class="radio-dot"></span>입주권/분양권 취득</label></div>
+    </div>
+    <div class="conditional" id="cond_gift_acq">
+      <div class="field">
+        <label class="field-label">취득 당시 증여/상속 평가액 (만원)</label>
+        <input type="number" id="gift_acq_value" placeholder="예: 40000 (4억)">
+        <p class="field-hint">취득 당시 기준시가 또는 감정평가액</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">취득 당시 조정대상지역 여부</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="acq_regulated" id="ar1" value="조정대상지역"><label for="ar1"><span class="radio-dot"></span>조정대상지역이었음</label></div>
+      <div class="radio-item"><input type="radio" name="acq_regulated" id="ar2" value="비조정지역"><label for="ar2"><span class="radio-dot"></span>비조정대상지역이었음</label></div>
+      <div class="radio-item"><input type="radio" name="acq_regulated" id="ar3" value="모름"><label for="ar3"><span class="radio-dot"></span>잘 모름</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">현재 조정대상지역 여부</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="curr_regulated" id="cr1" value="조정대상지역"><label for="cr1"><span class="radio-dot"></span>현재 조정대상지역</label></div>
+      <div class="radio-item"><input type="radio" name="curr_regulated" id="cr2" value="비조정지역"><label for="cr2"><span class="radio-dot"></span>현재 비조정대상지역</label></div>
+      <div class="radio-item"><input type="radio" name="curr_regulated" id="cr3" value="모름"><label for="cr3"><span class="radio-dot"></span>잘 모름</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">재개발/재건축 관련 여부</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="redevelopment" id="rd1" value="해당없음"><label for="rd1"><span class="radio-dot"></span>해당 없음</label></div>
+      <div class="radio-item"><input type="radio" name="redevelopment" id="rd2" value="구역지정" onchange="toggleRedev()"><label for="rd2"><span class="radio-dot"></span>재개발/재건축 구역 지정됨</label></div>
+      <div class="radio-item"><input type="radio" name="redevelopment" id="rd3" value="관리처분인가" onchange="toggleRedev()"><label for="rd3"><span class="radio-dot"></span>관리처분인가 완료</label></div>
+      <div class="radio-item"><input type="radio" name="redevelopment" id="rd4" value="조합원입주권" onchange="toggleRedev()"><label for="rd4"><span class="radio-dot"></span>조합원 입주권 보유</label></div>
+    </div>
+    <div class="conditional" id="cond_redev">
+      <div class="field">
+        <label class="field-label">프리미엄(웃돈) 여부</label>
+        <div class="radio-group">
+          <div class="radio-item"><input type="radio" name="redev_premium" id="rp1" value="있음"><label for="rp1"><span class="radio-dot"></span>프리미엄 있음</label></div>
+          <div class="radio-item"><input type="radio" name="redev_premium" id="rp2" value="없음"><label for="rp2"><span class="radio-dot"></span>프리미엄 없음</label></div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">조합원 분담금 예상 여부</label>
+        <div class="radio-group">
+          <div class="radio-item"><input type="radio" name="redev_contribution" id="rc1" value="알고있음"><label for="rc1"><span class="radio-dot"></span>분담금 예상액 알고 있음</label></div>
+          <div class="radio-item"><input type="radio" name="redev_contribution" id="rc2" value="모름"><label for="rc2"><span class="radio-dot"></span>모름</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">취득 당시 분양권으로 취득한 경우</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="was_presale" id="wp1" value="해당없음"><label for="wp1"><span class="radio-dot"></span>해당 없음</label></div>
+      <div class="radio-item"><input type="radio" name="was_presale" id="wp2" value="해당" onchange="togglePresale()"><label for="wp2"><span class="radio-dot"></span>분양권 취득 후 완공</label></div>
+    </div>
+    <div class="conditional" id="cond_presale">
+      <div class="field">
+        <label class="field-label">분양권 최초 계약일</label>
+        <input type="text" id="presale_date" placeholder="예: 2018년 5월">
+        <p class="field-hint">2021년 1월 이후 취득 분양권은 주택 수 포함</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevStep(3)">← 이전</button>
+    <button class="btn btn-next" onclick="nextStep(3)">다음 단계 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     STEP 4 — 세대·거주
+════════════════════════════════════════════ -->
+<div class="step-section" id="step-4">
+  <div class="step-title">세대 및 거주 요건</div>
+  <div class="step-desc">비과세 요건 판단에 필요한 정보입니다.</div>
+
+  <div class="notice">
+    <strong>1세대 1주택 비과세</strong>란 2년 이상 보유 (+ 거주 2년) 시 양도세가 면제되는 제도입니다.
+    정확한 세대 구성이 중요합니다.
+  </div>
+
+  <div class="field">
+    <label class="field-label required">세대 구성</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="household" id="hh1" value="단독세대"><label for="hh1"><span class="radio-dot"></span>단독세대 (혼자 세대주)</label></div>
+      <div class="radio-item"><input type="radio" name="household" id="hh2" value="배우자동세대"><label for="hh2"><span class="radio-dot"></span>배우자와 같은 세대</label></div>
+      <div class="radio-item"><input type="radio" name="household" id="hh3" value="부모동세대"><label for="hh3"><span class="radio-dot"></span>부모님과 같은 세대</label></div>
+      <div class="radio-item"><input type="radio" name="household" id="hh4" value="자녀동세대"><label for="hh4"><span class="radio-dot"></span>자녀와 같은 세대</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">배우자 부동산 보유 여부</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="spouse_property" id="sp1" value="없음"><label for="sp1"><span class="radio-dot"></span>없음</label></div>
+      <div class="radio-item"><input type="radio" name="spouse_property" id="sp2" value="있음" onchange="toggleSpouseProperty()"><label for="sp2"><span class="radio-dot"></span>있음</label></div>
+      <div class="radio-item"><input type="radio" name="spouse_property" id="sp3" value="미혼/해당없음"><label for="sp3"><span class="radio-dot"></span>미혼/해당 없음</label></div>
+    </div>
+    <div class="conditional" id="cond_spouse_property">
+      <div class="field">
+        <label class="field-label">배우자 보유 주택 수</label>
+        <div class="radio-group">
+          <div class="radio-item"><input type="radio" name="spouse_houses" id="sh1" value="1채"><label for="sh1"><span class="radio-dot"></span>1채</label></div>
+          <div class="radio-item"><input type="radio" name="spouse_houses" id="sh2" value="2채이상"><label for="sh2"><span class="radio-dot"></span>2채 이상</label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">1세대 1주택 비과세 요건 충족 여부 (본인 판단)</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="nontax_eligible" id="ne1" value="충족"><label for="ne1"><span class="radio-dot"></span>충족한다고 생각함</label></div>
+      <div class="radio-item"><input type="radio" name="nontax_eligible" id="ne2" value="미충족"><label for="ne2"><span class="radio-dot"></span>충족하지 못함 (다주택 등)</label></div>
+      <div class="radio-item"><input type="radio" name="nontax_eligible" id="ne3" value="모름"><label for="ne3"><span class="radio-dot"></span>잘 모름</label></div>
+    </div>
+    <p class="field-hint">잘 모르셔도 됩니다. 입력하신 정보로 자동 판단합니다.</p>
+  </div>
+
+  <div class="field">
+    <label class="field-label">고가주택 여부 (공시가 12억 초과)</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="high_value" id="hv1" value="12억이하"><label for="hv1"><span class="radio-dot"></span>12억 이하</label></div>
+      <div class="radio-item"><input type="radio" name="high_value" id="hv2" value="12억초과"><label for="hv2"><span class="radio-dot"></span>12억 초과</label></div>
+      <div class="radio-item"><input type="radio" name="high_value" id="hv3" value="모름"><label for="hv3"><span class="radio-dot"></span>모름</label></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevStep(4)">← 이전</button>
+    <button class="btn btn-next" onclick="nextStep(4)">다음 단계 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     STEP 5 — 특수 상황
+════════════════════════════════════════════ -->
+<div class="step-section" id="step-5">
+  <div class="step-title">특수 상황</div>
+  <div class="step-desc">해당하는 항목만 체크하세요. 없으면 모두 건너뛰어도 됩니다.</div>
+
+  <div class="field">
+    <label class="field-label">증여 이력 (최근 10년 이내)</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="gift_history" id="gh1" value="없음"><label for="gh1"><span class="radio-dot"></span>없음</label></div>
+      <div class="radio-item"><input type="radio" name="gift_history" id="gh2" value="있음" onchange="toggleGiftHistory()"><label for="gh2"><span class="radio-dot"></span>있음</label></div>
+    </div>
+    <div class="conditional" id="cond_gift_history">
+      <div class="field">
+        <label class="field-label">기증여 합계 금액 (만원)</label>
+        <input type="number" id="gift_total" placeholder="예: 5000 (5천만원)">
+        <p class="field-hint">증여세 합산과세 적용 (10년 이내 합산)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">부담부증여 고려 여부</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="burden_gift" id="bg1" value="아니오"><label for="bg1"><span class="radio-dot"></span>아니오</label></div>
+      <div class="radio-item"><input type="radio" name="burden_gift" id="bg2" value="고려중"><label for="bg2"><span class="radio-dot"></span>고려 중 (채무 포함 증여)</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">상속 관련 사항</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="inheritance" id="inh1" value="해당없음"><label for="inh1"><span class="radio-dot"></span>해당 없음</label></div>
+      <div class="radio-item"><input type="radio" name="inheritance" id="inh2" value="상속예정" onchange="toggleInheritance()"><label for="inh2"><span class="radio-dot"></span>향후 상속 예정 (부모님 부동산)</label></div>
+      <div class="radio-item"><input type="radio" name="inheritance" id="inh3" value="상속받음" onchange="toggleInheritance()"><label for="inh3"><span class="radio-dot"></span>이미 상속 받음</label></div>
+    </div>
+    <div class="conditional" id="cond_inheritance">
+      <div class="field">
+        <label class="field-label">예상 상속 자산 규모 (만원, 부동산 포함)</label>
+        <input type="number" id="inheritance_value" placeholder="예: 200000 (20억)">
+      </div>
+      <div class="field">
+        <label class="field-label">상속인 수</label>
+        <input type="number" id="heir_count" placeholder="예: 3">
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">증여 대상 예정자 (복수 선택 가능)</label>
+    <div class="check-group">
+      <div class="check-item"><input type="checkbox" id="gift_to_spouse" value="배우자"><label for="gift_to_spouse"><span class="check-dot"></span>배우자</label></div>
+      <div class="check-item"><input type="checkbox" id="gift_to_child" value="자녀"><label for="gift_to_child"><span class="check-dot"></span>자녀</label></div>
+      <div class="check-item"><input type="checkbox" id="gift_to_other" value="기타"><label for="gift_to_other"><span class="check-dot"></span>기타 친족</label></div>
+      <div class="check-item"><input type="checkbox" id="gift_to_none" value="없음"><label for="gift_to_none"><span class="check-dot"></span>증여 고려 안 함</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">기타 특수 사항 (자유 입력)</label>
+    <textarea id="special_note" placeholder="예: 이혼 예정으로 재산분할 고려 중, 미국 시민권자로 해외거주 중, 농지 보유, 상가겸용주택 등"></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevStep(5)">← 이전</button>
+    <button class="btn btn-next" onclick="nextStep(5)">다음 단계 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     STEP 6 — 원하는 결과
+════════════════════════════════════════════ -->
+<div class="step-section" id="step-6">
+  <div class="step-title">원하는 결과</div>
+  <div class="step-desc">어떤 시나리오를 분석받고 싶으신가요? 복수 선택 가능합니다.</div>
+
+  <div class="field">
+    <label class="field-label required">분석 받고 싶은 시나리오 (복수 선택)</label>
+    <div class="check-group col">
+      <div class="check-item"><input type="checkbox" id="sc_sell" value="매도"><label for="sc_sell"><span class="check-dot"></span>지금 팔기 — 양도세·실수령액 계산</label></div>
+      <div class="check-item"><input type="checkbox" id="sc_hold" value="보유"><label for="sc_hold"><span class="check-dot"></span>계속 버티기 — 보유세 부담·기회비용</label></div>
+      <div class="check-item"><input type="checkbox" id="sc_timing" value="타이밍"><label for="sc_timing"><span class="check-dot"></span>매도 타이밍 최적화 — 지금/1년/3년/5년 후 비교</label></div>
+      <div class="check-item"><input type="checkbox" id="sc_gift" value="증여"><label for="sc_gift"><span class="check-dot"></span>증여 시나리오 — 증여세·수증자 부담</label></div>
+      <div class="check-item"><input type="checkbox" id="sc_inherit" value="상속"><label for="sc_inherit"><span class="check-dot"></span>상속 시나리오 — 증여 vs 상속 비교</label></div>
+      <div class="check-item"><input type="checkbox" id="sc_redev" value="재개발"><label for="sc_redev"><span class="check-dot"></span>재개발/재건축 수익 시뮬레이션</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">가장 큰 고민</label>
+    <div class="radio-group col">
+      <div class="radio-item"><input type="radio" name="main_concern" id="mc1" value="세금최소화"><label for="mc1"><span class="radio-dot"></span>세금을 최대한 줄이고 싶다</label></div>
+      <div class="radio-item"><input type="radio" name="main_concern" id="mc2" value="현금확보"><label for="mc2"><span class="radio-dot"></span>현금을 최대한 확보하고 싶다</label></div>
+      <div class="radio-item"><input type="radio" name="main_concern" id="mc3" value="자녀이전"><label for="mc3"><span class="radio-dot"></span>자녀에게 효율적으로 넘기고 싶다</label></div>
+      <div class="radio-item"><input type="radio" name="main_concern" id="mc4" value="타이밍판단"><label for="mc4"><span class="radio-dot"></span>지금 팔아야 할지 버텨야 할지 모르겠다</label></div>
+      <div class="radio-item"><input type="radio" name="main_concern" id="mc5" value="종합검토"><label for="mc5"><span class="radio-dot"></span>모든 선택지를 종합적으로 검토하고 싶다</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">추가로 알고 싶은 것 (자유 입력)</label>
+    <textarea id="extra_question" placeholder="구체적인 상황이나 궁금한 점을 자유롭게 적어주세요."></textarea>
+  </div>
+
+  <div class="field">
+    <label class="field-label required">결정 시급성</label>
+    <div class="range-wrap">
+      <span style="font-size:12px;color:var(--dim);">여유있음</span>
+      <input type="range" id="urgency" min="1" max="5" value="3" oninput="updateUrgency(this.value)">
+      <span style="font-size:12px;color:var(--dim);">매우 급함</span>
+      <div class="range-val" id="urgency_val">3</div>
+    </div>
+    <div id="urgency_label" style="font-size:12px;color:var(--gold);margin-top:8px;"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" onclick="prevStep(6)">← 이전</button>
+    <button class="btn btn-next" onclick="nextStep(6)">다음 단계 →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     STEP 7 — 연락처
+════════════════════════════════════════════ -->
+<div class="step-section" id="step-7">
+  <div class="step-title">리포트 수령 정보</div>
+  <div class="step-desc">리포트는 입력하신 이메일로 발송됩니다.</div>
+
+  <div class="notice">
+    <strong>발송 안내:</strong> 리포트는 결제 완료 후 <strong>다음날 오후 3시 28분</strong>에 이메일로 발송됩니다.<br>
+    본 리포트는 AI 세금 시뮬레이션입니다. 중요한 결정은 반드시 세무사와 상담하십시오.
+  </div>
+
+  <div class="field">
+    <label class="field-label required">이름</label>
+    <input type="text" id="user_name" placeholder="홍길동">
+  </div>
+
+  <div class="field">
+    <label class="field-label required">이메일</label>
+    <input type="email" id="user_email" placeholder="example@email.com">
+    <p class="field-hint">리포트 PDF가 이 주소로 발송됩니다</p>
+  </div>
+
+  <div class="field">
+    <label class="field-label">연락처 (선택)</label>
+    <input type="text" id="user_phone" placeholder="010-0000-0000">
+  </div>
+
+  <div class="field">
+    <label class="field-label required">면책 조항 동의</label>
+    <div class="check-group col">
+      <div class="check-item">
+        <input type="checkbox" id="agree_disclaimer">
+        <label for="agree_disclaimer">
+          <span class="check-dot"></span>
+          본 리포트는 AI 세금 시뮬레이션 도구이며 법적 세무 조언이 아님을 이해합니다. 중요한 결정은 공인 세무사와 상담할 것을 권고합니다.
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <button class="btn btn-submit" id="submitBtn" onclick="submitForm()" disabled>
+      결제하고 리포트 신청하기 — 149,000원
+    </button>
+    <p style="text-align:center;font-size:12px;color:var(--dim);margin-top:16px;">
+      토스페이먼츠 결제창이 열립니다
     </p>
   </div>
 
-  <div class="card">
-    <div id="formSection">
-
-      <!-- 1. 기본 정보 -->
-      <div class="section-gap">
-        <div class="section-label">01 · 기본 정보</div>
-
-        <div class="field">
-          <label class="field-label">성함</label>
-          <input type="text" id="name" placeholder="홍길동">
-        </div>
-
-        <div class="field">
-          <label class="field-label">본인 기준 현재 주택 수</label>
-          <div class="radio-group">
-            <div class="radio-item">
-              <input type="radio" name="houseCount" id="h1" value="1">
-              <label for="h1">1주택</label>
-            </div>
-            <div class="radio-item">
-              <input type="radio" name="houseCount" id="h2" value="2">
-              <label for="h2">2주택</label>
-            </div>
-            <div class="radio-item">
-              <input type="radio" name="houseCount" id="h3" value="3">
-              <label for="h3">3주택 이상</label>
-            </div>
-            <div class="radio-item">
-              <input type="radio" name="houseCount" id="h0" value="0">
-              <label for="h0">무주택</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. 핵심 부동산 -->
-      <div class="section-gap">
-        <div class="section-label">02 · 핵심 부동산 정보</div>
-        <p class="field-note" style="margin-bottom:20px">가장 고민이 되는 부동산 하나를 기준으로 입력해주세요.</p>
-
-        <div class="field grid-2">
-          <div>
-            <label class="field-label">취득 금액 (원)</label>
-            <input type="number" id="buyPrice" placeholder="300000000">
-          </div>
-          <div>
-            <label class="field-label">현재 시세 (원)</label>
-            <input type="number" id="currentPrice" placeholder="700000000">
-          </div>
-        </div>
-
-        <div class="field grid-3">
-          <div>
-            <label class="field-label">취득 연도</label>
-            <select id="buyYear">
-              <option value="">년도</option>
-              <script>for(let y=2026;y>=1990;y--) document.write(`<option value="${y}">${y}년</option>`)</script>
-            </select>
-          </div>
-          <div>
-            <label class="field-label">취득 월</label>
-            <select id="buyMonth">
-              <option value="">월</option>
-              <script>for(let m=1;m<=12;m++) document.write(`<option value="${m}">${m}월</option>`)</script>
-            </select>
-          </div>
-          <div>
-            <label class="field-label">취득 일</label>
-            <select id="buyDay">
-              <option value="">일</option>
-              <script>for(let d=1;d<=31;d++) document.write(`<option value="${d}">${d}일</option>`)</script>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="field-label">실거주 기간</label>
-          <div class="radio-group">
-            <div class="radio-item"><input type="radio" name="liveYears" id="ly0" value="0"><label for="ly0">거주 없음 (전세/임대)</label></div>
-            <div class="radio-item"><input type="radio" name="liveYears" id="ly1" value="1"><label for="ly1">1년 미만</label></div>
-            <div class="radio-item"><input type="radio" name="liveYears" id="ly2" value="2"><label for="ly2">1~2년</label></div>
-            <div class="radio-item"><input type="radio" name="liveYears" id="ly3" value="3"><label for="ly3">2년 이상</label></div>
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="field-label">조정대상지역 여부</label>
-          <div class="radio-group">
-            <div class="radio-item"><input type="radio" name="regulated" id="r1" value="yes"><label for="r1">조정대상지역</label></div>
-            <div class="radio-item"><input type="radio" name="regulated" id="r2" value="no"><label for="r2">비조정지역</label></div>
-            <div class="radio-item"><input type="radio" name="regulated" id="r3" value="unknown"><label for="r3">모르겠음</label></div>
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="field-label">재개발/재건축 여부 <span class="opt">· 해당 시</span></label>
-          <div class="radio-group">
-            <div class="radio-item"><input type="radio" name="reDev" id="rd0" value="none"><label for="rd0">해당 없음</label></div>
-            <div class="radio-item"><input type="radio" name="reDev" id="rd1" value="before"><label for="rd1">관리처분인가 전 취득</label></div>
-            <div class="radio-item"><input type="radio" name="reDev" id="rd2" value="after"><label for="rd2">입주권 취득</label></div>
-            <div class="radio-item"><input type="radio" name="reDev" id="rd3" value="complete"><label for="rd3">완공 후 입주</label></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. 가족 구성 -->
-      <div class="section-gap">
-        <div class="section-label">03 · 가족 구성 <span style="font-size:11px;color:var(--text-dim);letter-spacing:0.05em;font-family:'Noto Sans KR'">· 증여/상속 시나리오에 활용</span></div>
-
-        <div class="field">
-          <label class="field-label">세대 구성</label>
-          <div class="radio-group">
-            <div class="radio-item"><input type="radio" name="family" id="f1" value="single"><label for="f1">1인</label></div>
-            <div class="radio-item"><input type="radio" name="family" id="f2" value="couple"><label for="f2">부부</label></div>
-            <div class="radio-item"><input type="radio" name="family" id="f3" value="family"><label for="f3">부부+자녀</label></div>
-            <div class="radio-item"><input type="radio" name="family" id="f4" value="extended"><label for="f4">부모+형제 포함</label></div>
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="field-label">가족 주택 보유 현황 <span class="opt">· 선택</span></label>
-          <div class="field-note">증여 시나리오가 있으면 가족 정보를 추가해주세요</div>
-          <div class="family-list" id="familyList"></div>
-          <button type="button" class="btn-add-family" onclick="toggleFamilyModal()">
-            + 가족 구성원 추가
-          </button>
-          <div class="family-modal" id="familyModal">
-            <div class="family-modal-grid">
-              <div>
-                <label>이름/호칭</label>
-                <input type="text" id="fmName" placeholder="예: 어머니, 동생">
-              </div>
-              <div>
-                <label>관계</label>
-                <select id="fmRelation">
-                  <option value="배우자">배우자</option>
-                  <option value="직계존속">자녀 (부모→자녀)</option>
-                  <option value="직계비속">부모 (자녀→부모)</option>
-                  <option value="기타친족">형제/기타</option>
-                </select>
-              </div>
-              <div>
-                <label>현재 주택 수</label>
-                <select id="fmHouseCount">
-                  <option value="0">무주택</option>
-                  <option value="1">1주택</option>
-                  <option value="2">2주택</option>
-                  <option value="3">3주택 이상</option>
-                </select>
-              </div>
-              <div>
-                <label>특수 조건</label>
-                <div style="padding-top:8px">
-                  <label class="checkbox-item">
-                    <input type="checkbox" id="fmSpecialSupply"> 청약/특공 대기 중
-                  </label>
-                </div>
-              </div>
-            </div>
-            <button type="button" class="btn-confirm-family" onclick="addFamilyMember()">추가하기</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4. 자유 서술 -->
-      <div class="section-gap">
-        <div class="section-label">04 · 상황 설명</div>
-
-        <div class="field">
-          <label class="field-label">현재 상황을 자유롭게 설명해주세요</label>
-          <div class="field-note">가족 보유 현황, 특수 사정, 급한 데드라인 등 — 구체적일수록 정확합니다</div>
-          <textarea id="situation" placeholder="예: 서울 마포구 아파트를 2018년에 4억에 취득했는데 현재 시세가 8억입니다. 전세를 놓고 있어서 실거주는 6개월밖에 안 됩니다. 배우자 명의로 분당에 아파트가 한 채 더 있어서 2주택자입니다. 5월 데드라인 전에 마포 아파트를 팔아야 할지, 아니면 들어가서 2년 실거주 후 파는 게 나을지 판단이 필요합니다."></textarea>
-        </div>
-
-        <div class="field">
-          <label class="field-label">원하는 결과가 무엇인가요?</label>
-          <textarea id="desired" placeholder="예: 지금 팔면 세금이 얼마인지, 2년 실거주 후 팔면 얼마나 아낄 수 있는지 비교해주세요 / 배우자 명의로 증여하는 게 나은지 알고 싶습니다 / 5월 9일 전에 반드시 팔아야 하는지 판단이 필요합니다" style="min-height:90px"></textarea>
-        </div>
-      </div>
-
-      <!-- 5. 연락처 -->
-      <div class="section-gap">
-        <div class="section-label">05 · 연락처</div>
-
-        <div class="field">
-          <label class="field-label">이메일</label>
-          <div class="field-note">리포트를 받을 이메일 주소입니다</div>
-          <input type="email" id="email" placeholder="report@email.com">
-        </div>
-      </div>
-
-      <div class="notice">
-        결제가 완료되면 판을 읽기 시작합니다.<br>
-        완성된 리포트는 1~3일 내 이메일로 전달됩니다.<br>
-        <span style="color:var(--text-dim);font-size:14px">분석 시작 이후 환불은 불가합니다.</span>
-      </div>
-
-      <button class="btn-submit" id="submitBtn" onclick="submitForm()">
-        <span id="btnText">결제 후 판단받기</span>
-      </button>
-
-      <div class="error-msg" id="errorMsg"></div>
-
-    </div><!-- /formSection -->
-
-    <!-- 완료 화면 -->
-    <div class="done" id="doneSection">
-      <span class="done-icon">✦</span>
-      <div class="done-title">판을 읽기 시작합니다.<br><em>결단을 위한 분석이 시작됩니다.</em></div>
-      <div class="done-body" id="doneText"></div>
-
-      <div class="payment-box">
-        <div class="payment-header">
-          <span class="p-label">리포트 결제</span>
-          <span class="p-price">부동산 의사결정 리포트</span>
-        </div>
-        <div class="payment-body">
-          <button class="btn-toss" onclick="alert('토스페이먼츠 연동 예정')">토스로 결제하기</button>
-          <button class="btn-kakao" onclick="alert('카카오페이 연동 예정')">카카오페이로 결제하기</button>
-        </div>
-        <div class="payment-note">계좌이체를 원하시면 이메일로 안내드립니다</div>
-      </div>
-    </div>
-
-  </div><!-- /card -->
-
-  <div class="footer">
-    판단 · 베러비전<br>
-    본 리포트는 정보 제공 목적이며 세무사 조언을 대체하지 않습니다.<br>
-    중요한 결정은 반드시 세무사와 상담하십시오.
+  <div class="btn-row" style="border:none;padding-top:0;">
+    <button class="btn btn-prev" onclick="prevStep(7)">← 이전</button>
+    <div></div>
   </div>
+</div>
 
-</div><!-- /wrap -->
+<!-- SUCCESS -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">📋</div>
+  <div class="success-title">신청이 완료되었습니다</div>
+  <p class="success-desc">
+    리포트는 내일 오후 3시 28분에<br>
+    입력하신 이메일로 발송됩니다.<br><br>
+    <span style="color:var(--gold)">한 채가 수억입니다.<br>그 결정에 최선을 다하겠습니다.</span>
+  </p>
+</div>
+
+</div><!-- /form-wrap -->
 
 <script>
-  // ── 가족 구성원 관리
-  let familyMembers = [];
+let currentStep = 1;
+const totalSteps = 7;
 
-  function toggleFamilyModal() {
-    const modal = document.getElementById('familyModal');
-    modal.classList.toggle('show');
+// ── 단계 이동
+function goStep(n) {
+  if (n > currentStep) return; // 앞으로 건너뛰기 금지
+  document.getElementById(`step-${currentStep}`).classList.remove('active');
+  currentStep = n;
+  document.getElementById(`step-${currentStep}`).classList.add('active');
+  updateProgress();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function nextStep(from) {
+  if (!validateStep(from)) return;
+  document.getElementById(`step-${from}`).classList.remove('active');
+  currentStep = from + 1;
+  document.getElementById(`step-${currentStep}`).classList.add('active');
+  updateProgress();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function prevStep(from) {
+  document.getElementById(`step-${from}`).classList.remove('active');
+  currentStep = from - 1;
+  document.getElementById(`step-${currentStep}`).classList.add('active');
+  updateProgress();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function updateProgress() {
+  for (let i = 1; i <= totalSteps; i++) {
+    const el = document.querySelector(`.progress-step[data-step="${i}"]`);
+    const line = document.getElementById(`line-${i}`);
+    el.classList.remove('active','done');
+    if (i < currentStep) { el.classList.add('done'); if(line) line.classList.add('done'); }
+    else if (i === currentStep) { el.classList.add('active'); if(line) line.classList.remove('done'); }
+    else { if(line) line.classList.remove('done'); }
   }
+}
 
-  function addFamilyMember() {
-    const name       = document.getElementById('fmName').value.trim();
-    const relation   = document.getElementById('fmRelation').value;
-    const houseCount = document.getElementById('fmHouseCount').value;
-    const special    = document.getElementById('fmSpecialSupply').checked;
-
-    if (!name) { alert('이름을 입력해주세요'); return; }
-
-    const member = { name, relation, houseCount: parseInt(houseCount), specialSupply: special };
-    familyMembers.push(member);
-    renderFamilyList();
-
-    // 초기화
-    document.getElementById('fmName').value = '';
-    document.getElementById('fmHouseCount').value = '0';
-    document.getElementById('fmSpecialSupply').checked = false;
-    document.getElementById('familyModal').classList.remove('show');
+// ── 유효성 검사
+function validateStep(step) {
+  let valid = true;
+  if (step === 1) {
+    if (!document.querySelector('input[name="property_type"]:checked')) { alert('부동산 유형을 선택해주세요.'); return false; }
+    if (!document.getElementById('location').value.trim()) { alert('소재지를 입력해주세요.'); return false; }
+    if (!document.getElementById('current_value').value) { alert('현재 시장가치를 입력해주세요.'); return false; }
+    if (!document.getElementById('acquisition_price').value) { alert('취득가를 입력해주세요.'); return false; }
+    if (!document.getElementById('acquisition_date').value) { alert('취득 연월을 입력해주세요.'); return false; }
+    if (!document.querySelector('input[name="total_houses"]:checked')) { alert('보유 주택 수를 선택해주세요.'); return false; }
   }
-
-  function removeFamilyMember(idx) {
-    familyMembers.splice(idx, 1);
-    renderFamilyList();
-  }
-
-  function renderFamilyList() {
-    const list = document.getElementById('familyList');
-    list.innerHTML = familyMembers.map((m, i) => `
-      <div class="family-item">
-        <span>${m.name}</span>
-        <span style="color:var(--text-dim);font-size:13px">· ${m.relation} · ${m.houseCount}주택${m.specialSupply ? ' · ⚠️특공대기' : ''}</span>
-        <button class="family-remove" onclick="removeFamilyMember(${i})">×</button>
-      </div>
-    `).join('');
-  }
-
-  // ── 폼 제출
-  async function submitForm() {
-    const name         = document.getElementById('name').value.trim();
-    const houseCount   = document.querySelector('input[name="houseCount"]:checked')?.value;
-    const buyPrice     = document.getElementById('buyPrice').value;
-    const currentPrice = document.getElementById('currentPrice').value;
-    const buyYear      = document.getElementById('buyYear').value;
-    const buyMonth     = document.getElementById('buyMonth').value;
-    const buyDay       = document.getElementById('buyDay').value;
-    const liveYears    = document.querySelector('input[name="liveYears"]:checked')?.value;
-    const situation    = document.getElementById('situation').value.trim();
-    const desired      = document.getElementById('desired').value.trim();
-    const email        = document.getElementById('email').value.trim();
-    const errorEl      = document.getElementById('errorMsg');
-
-    errorEl.style.display = 'none';
-
-    // 필수 검증
-    if (!name || !houseCount || !buyPrice || !currentPrice || !buyYear || !email) {
-      errorEl.textContent = '성함, 주택 수, 부동산 금액, 취득 연도, 이메일은 필수입니다.';
-      errorEl.style.display = 'block';
-      return;
+  if (step === 6) {
+    const checked = document.querySelectorAll('.check-group input[type="checkbox"]:checked');
+    if (document.querySelectorAll('#sc_sell:checked, #sc_hold:checked, #sc_timing:checked, #sc_gift:checked, #sc_inherit:checked, #sc_redev:checked').length === 0) {
+      alert('분석 받고 싶은 시나리오를 하나 이상 선택해주세요.'); return false;
     }
-
-    if (!email.includes('@')) {
-      errorEl.textContent = '올바른 이메일 주소를 입력해주세요.';
-      errorEl.style.display = 'block';
-      return;
-    }
-
-    const btn = document.getElementById('submitBtn');
-    const btnText = document.getElementById('btnText');
-    btn.disabled = true;
-    btnText.textContent = '접수 중...';
-
-    const payload = {
-      name, houseCount, buyPrice, currentPrice,
-      buyYear, buyMonth, buyDay,
-      liveYears: liveYears || '0',
-      regulated: document.querySelector('input[name="regulated"]:checked')?.value || 'unknown',
-      reDev: document.querySelector('input[name="reDev"]:checked')?.value || 'none',
-      familyComposition: document.querySelector('input[name="family"]:checked')?.value || '',
-      familyMembers,
-      situation,
-      desired,
-      email,
-    };
-
-    try {
-      // TODO: Railway URL 교체
-      const res = await fetch('https://YOUR_RAILWAY_URL/generate_판단', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        showDone(name, email);
-      } else {
-        errorEl.textContent = data.message || '오류가 발생했습니다.';
-        errorEl.style.display = 'block';
-        btn.disabled = false;
-        btnText.textContent = '결제 후 판단받기';
-      }
-    } catch (e) {
-      // 개발 중 — 서버 없어도 완료 화면 테스트 가능
-      showDone(name, email);
-    }
+    if (!document.querySelector('input[name="main_concern"]:checked')) { alert('가장 큰 고민을 선택해주세요.'); return false; }
   }
-
-  function showDone(name, email) {
-    document.getElementById('formSection').style.display = 'none';
-    document.getElementById('doneSection').classList.add('show');
-    document.getElementById('doneText').innerHTML =
-      `<strong>${name}</strong>님의 부동산 판을 읽기 시작합니다.<br><br>` +
-      `1~3일 내에 <strong>${email}</strong>로<br>` +
-      `최적 경로가 담긴 리포트를 전달해드리겠습니다.`;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (step === 7) {
+    // submit 버튼 활성화는 별도 처리
   }
+  return valid;
+}
+
+// ── 조건부 표시
+function toggleMultiHouse() {
+  const val = document.querySelector('input[name="total_houses"]:checked')?.value;
+  document.getElementById('cond_multi_house').classList.toggle('show', val === '2' || val === '3');
+}
+function toggleDebt() {
+  const val = document.querySelector('input[name="has_debt"]:checked')?.value;
+  document.getElementById('cond_debt').classList.toggle('show', val === '있음');
+}
+function toggleRental() {
+  const val = document.querySelector('input[name="rental_business"]:checked')?.value;
+  document.getElementById('cond_rental').classList.toggle('show', val === '등록');
+}
+function toggleGiftAcq() {
+  const val = document.querySelector('input[name="acquisition_method"]:checked')?.value;
+  document.getElementById('cond_gift_acq').classList.toggle('show', val === '증여' || val === '상속');
+}
+function toggleRedev() {
+  const val = document.querySelector('input[name="redevelopment"]:checked')?.value;
+  document.getElementById('cond_redev').classList.toggle('show', val !== '해당없음' && val);
+}
+function togglePresale() {
+  const val = document.querySelector('input[name="was_presale"]:checked')?.value;
+  document.getElementById('cond_presale').classList.toggle('show', val === '해당');
+}
+function toggleSpouseProperty() {
+  const val = document.querySelector('input[name="spouse_property"]:checked')?.value;
+  document.getElementById('cond_spouse_property').classList.toggle('show', val === '있음');
+}
+function toggleGiftHistory() {
+  const val = document.querySelector('input[name="gift_history"]:checked')?.value;
+  document.getElementById('cond_gift_history').classList.toggle('show', val === '있음');
+}
+function toggleInheritance() {
+  const val = document.querySelector('input[name="inheritance"]:checked')?.value;
+  document.getElementById('cond_inheritance').classList.toggle('show', val !== '해당없음' && val);
+}
+
+// ── 긴급도 슬라이더
+const urgencyLabels = {1:'여유있게 검토 중',2:'조만간 결정 예정',3:'올해 안에는 결정해야 함',4:'빠른 결정 필요',5:'매우 급함 (세금 데드라인 등)'};
+function updateUrgency(val) {
+  document.getElementById('urgency_val').textContent = val;
+  document.getElementById('urgency_label').textContent = urgencyLabels[val] || '';
+}
+updateUrgency(3);
+
+// ── 제출 버튼 활성화
+document.getElementById('agree_disclaimer').addEventListener('change', function() {
+  const name = document.getElementById('user_name').value.trim();
+  const email = document.getElementById('user_email').value.trim();
+  document.getElementById('submitBtn').disabled = !(this.checked && name && email);
+});
+['user_name','user_email'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    const agreed = document.getElementById('agree_disclaimer').checked;
+    const name = document.getElementById('user_name').value.trim();
+    const email = document.getElementById('user_email').value.trim();
+    document.getElementById('submitBtn').disabled = !(agreed && name && email);
+  });
+});
+
+// ── 데이터 수집
+function collectData() {
+  const r = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
+  const v = (id) => document.getElementById(id)?.value || '';
+  const checks = (ids) => ids.filter(id => document.getElementById(id)?.checked).map(id => document.getElementById(id).value);
+
+  return {
+    // 기본
+    name: v('user_name'),
+    email: v('user_email'),
+    phone: v('user_phone'),
+    // 1단계
+    property_type: r('property_type'),
+    location: v('location'),
+    current_value: v('current_value'),
+    acquisition_price: v('acquisition_price'),
+    acquisition_date: v('acquisition_date'),
+    total_houses: r('total_houses'),
+    other_houses: v('other_houses'),
+    temp_2house: r('temp_2house'),
+    joint_ownership: r('joint_ownership'),
+    // 2단계
+    usage: r('usage'),
+    residence_years: r('residence_years'),
+    has_debt: r('has_debt'),
+    debt_amount: v('debt_amount'),
+    rental_business: r('rental_business'),
+    rental_obligation: r('rental_obligation'),
+    rental_type: r('rental_type'),
+    corp_owned: r('corp_owned'),
+    // 3단계
+    acquisition_method: r('acquisition_method'),
+    gift_acq_value: v('gift_acq_value'),
+    acq_regulated: r('acq_regulated'),
+    curr_regulated: r('curr_regulated'),
+    redevelopment: r('redevelopment'),
+    redev_premium: r('redev_premium'),
+    redev_contribution: r('redev_contribution'),
+    was_presale: r('was_presale'),
+    presale_date: v('presale_date'),
+    // 4단계
+    household: r('household'),
+    spouse_property: r('spouse_property'),
+    spouse_houses: r('spouse_houses'),
+    nontax_eligible: r('nontax_eligible'),
+    high_value: r('high_value'),
+    // 5단계
+    gift_history: r('gift_history'),
+    gift_total: v('gift_total'),
+    burden_gift: r('burden_gift'),
+    inheritance: r('inheritance'),
+    inheritance_value: v('inheritance_value'),
+    heir_count: v('heir_count'),
+    gift_targets: checks(['gift_to_spouse','gift_to_child','gift_to_other','gift_to_none']),
+    special_note: v('special_note'),
+    // 6단계
+    scenarios: checks(['sc_sell','sc_hold','sc_timing','sc_gift','sc_inherit','sc_redev']),
+    main_concern: r('main_concern'),
+    extra_question: v('extra_question'),
+    urgency: v('urgency'),
+  };
+}
+
+// ── 제출
+async function submitForm() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '처리 중...';
+
+  const data = collectData();
+
+  try {
+    const res = await fetch('https://pandan-production.up.railway.app/generate', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+    const json = await res.json();
+    if (res.ok) {
+      document.querySelector('.form-wrap').style.display = 'none';
+      document.getElementById('successScreen').classList.add('show');
+    } else {
+      alert(json.error || '오류가 발생했습니다. 다시 시도해주세요.');
+      btn.disabled = false;
+      btn.textContent = '결제하고 리포트 신청하기 — 149,000원';
+    }
+  } catch(e) {
+    alert('서버 연결 오류가 발생했습니다.');
+    btn.disabled = false;
+    btn.textContent = '결제하고 리포트 신청하기 — 149,000원';
+  }
+}
 </script>
 </body>
 </html>

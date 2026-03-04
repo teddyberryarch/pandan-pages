@@ -556,25 +556,45 @@ input[type="range"] {
   <div class="field">
     <label class="field-label required">재개발/재건축 관련 여부</label>
     <div class="radio-group col">
-      <div class="radio-item"><input type="radio" name="redevelopment" id="rd1" value="해당없음"><label for="rd1"><span class="radio-dot"></span>해당 없음</label></div>
+      <div class="radio-item"><input type="radio" name="redevelopment" id="rd1" value="해당없음" onchange="toggleRedev()"><label for="rd1"><span class="radio-dot"></span>해당 없음</label></div>
       <div class="radio-item"><input type="radio" name="redevelopment" id="rd2" value="구역지정" onchange="toggleRedev()"><label for="rd2"><span class="radio-dot"></span>재개발/재건축 구역 지정됨</label></div>
       <div class="radio-item"><input type="radio" name="redevelopment" id="rd3" value="관리처분인가" onchange="toggleRedev()"><label for="rd3"><span class="radio-dot"></span>관리처분인가 완료</label></div>
       <div class="radio-item"><input type="radio" name="redevelopment" id="rd4" value="조합원입주권" onchange="toggleRedev()"><label for="rd4"><span class="radio-dot"></span>조합원 입주권 보유</label></div>
+      <div class="radio-item"><input type="radio" name="redevelopment" id="rd5" value="완공후입주" onchange="toggleRedev()"><label for="rd5"><span class="radio-dot"></span>완공 후 입주 (실거주 중)</label></div>
     </div>
     <div class="conditional" id="cond_redev">
       <div class="field">
-        <label class="field-label">프리미엄(웃돈) 여부</label>
+        <label class="field-label">종전주택(빌라/구축) 실제 매입가 (만원)</label>
+        <input type="number" id="redev_original_price" placeholder="예: 23000 (2억3천)">
+        <p class="field-hint">재개발 구역 내 집을 처음 살 때 지불한 금액</p>
+      </div>
+      <div class="field">
+        <label class="field-label">프리미엄(웃돈) 여부 및 금액</label>
         <div class="radio-group">
-          <div class="radio-item"><input type="radio" name="redev_premium" id="rp1" value="있음"><label for="rp1"><span class="radio-dot"></span>프리미엄 있음</label></div>
-          <div class="radio-item"><input type="radio" name="redev_premium" id="rp2" value="없음"><label for="rp2"><span class="radio-dot"></span>프리미엄 없음</label></div>
+          <div class="radio-item"><input type="radio" name="redev_premium" id="rp1" value="있음" onchange="toggleRedevPremium()"><label for="rp1"><span class="radio-dot"></span>프리미엄 있음</label></div>
+          <div class="radio-item"><input type="radio" name="redev_premium" id="rp2" value="없음" onchange="toggleRedevPremium()"><label for="rp2"><span class="radio-dot"></span>프리미엄 없음</label></div>
+        </div>
+        <div class="conditional" id="cond_redev_premium">
+          <input type="number" id="redev_premium_amount" placeholder="프리미엄 금액 (만원), 예: 20000 (2억)">
         </div>
       </div>
       <div class="field">
-        <label class="field-label">조합원 분담금 예상 여부</label>
-        <div class="radio-group">
-          <div class="radio-item"><input type="radio" name="redev_contribution" id="rc1" value="알고있음"><label for="rc1"><span class="radio-dot"></span>분담금 예상액 알고 있음</label></div>
-          <div class="radio-item"><input type="radio" name="redev_contribution" id="rc2" value="모름"><label for="rc2"><span class="radio-dot"></span>모름</label></div>
-        </div>
+        <label class="field-label">조합원 분양가 (만원)</label>
+        <input type="number" id="redev_allotment_price" placeholder="예: 58000 (5억8천)">
+      </div>
+      <div class="field">
+        <label class="field-label">종전주택 감정평가 인정액 (만원)</label>
+        <input type="number" id="redev_assessed_value" placeholder="예: 20000 (2억)">
+        <p class="field-hint">분양가에서 차감해주는 금액 (권리가액)</p>
+      </div>
+      <div class="field">
+        <label class="field-label">관리처분인가일</label>
+        <input type="text" id="redev_mgmt_date" placeholder="예: 2022년 6월">
+      </div>
+      <div class="field" id="field_redev_move_in" style="display:none">
+        <label class="field-label">완공 후 입주일 (실거주 시작일)</label>
+        <input type="text" id="redev_move_in_date" placeholder="예: 2024년 3월">
+        <p class="field-hint">관리처분인가 후 완공 아파트에서 2년 실거주해야 비과세 가능</p>
       </div>
     </div>
   </div>
@@ -862,7 +882,9 @@ const totalSteps = 7;
 
 // ── 단계 이동
 function goStep(n) {
-  if (n > currentStep) return; // 앞으로 건너뛰기 금지
+  // done 단계(이미 완료)는 자유롭게 이동 가능, 아직 안 간 앞 단계는 금지
+  const el = document.querySelector(`.progress-step[data-step="${n}"]`);
+  if (n > currentStep && !el?.classList.contains('done')) return;
   document.getElementById(`step-${currentStep}`).classList.remove('active');
   currentStep = n;
   document.getElementById(`step-${currentStep}`).classList.add('active');
@@ -941,7 +963,15 @@ function toggleGiftAcq() {
 }
 function toggleRedev() {
   const val = document.querySelector('input[name="redevelopment"]:checked')?.value;
-  document.getElementById('cond_redev').classList.toggle('show', val !== '해당없음' && val);
+  const show = val && val !== '해당없음';
+  document.getElementById('cond_redev').classList.toggle('show', show);
+  // 완공후입주 선택 시 입주일 필드 표시
+  const moveInField = document.getElementById('field_redev_move_in');
+  if (moveInField) moveInField.style.display = (val === '완공후입주') ? 'block' : 'none';
+}
+function toggleRedevPremium() {
+  const val = document.querySelector('input[name="redev_premium"]:checked')?.value;
+  document.getElementById('cond_redev_premium').classList.toggle('show', val === '있음');
 }
 function togglePresale() {
   const val = document.querySelector('input[name="was_presale"]:checked')?.value;
@@ -1019,7 +1049,13 @@ function collectData() {
     acq_regulated: r('acq_regulated'),
     curr_regulated: r('curr_regulated'),
     redevelopment: r('redevelopment'),
+    redev_original_price: v('redev_original_price'),
     redev_premium: r('redev_premium'),
+    redev_premium_amount: v('redev_premium_amount'),
+    redev_allotment_price: v('redev_allotment_price'),
+    redev_assessed_value: v('redev_assessed_value'),
+    redev_mgmt_date: v('redev_mgmt_date'),
+    redev_move_in_date: v('redev_move_in_date'),
     redev_contribution: r('redev_contribution'),
     was_presale: r('was_presale'),
     presale_date: v('presale_date'),

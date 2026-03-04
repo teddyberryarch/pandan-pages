@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>결정 — 보유 부동산 의사결정 리포트</title>
+<title>판단 — 보유 부동산 의사결정 리포트</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -180,6 +180,18 @@ textarea { resize: vertical; min-height: 90px; }
   display: flex; align-items: center; justify-content: center;
 }
 .check-dot { border-radius: 3px; }
+.check-box {
+  width: 16px; height: 16px; border-radius: 3px;
+  border: 1.5px solid var(--gold-dim); flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-right: 2px; transition: border-color .2s;
+}
+.radio-item input[type="checkbox"]:checked + label .check-box {
+  border-color: var(--gold); background: var(--gold);
+}
+.radio-item input[type="checkbox"]:checked + label .check-box::after {
+  content: '✓'; font-size: 10px; color: #0f0f0d; font-weight: 700;
+}
 .radio-item input:checked + label .radio-dot::after {
   content: ''; width: 6px; height: 6px; border-radius: 50%;
   background: var(--gold); display: block;
@@ -295,10 +307,10 @@ input[type="range"] {
 
 <div class="header">
   <div class="header-tag">베러비전 · 부동산 의사결정</div>
-  <h1>결정</h1>
+  <h1>판단</h1>
   <p class="header-sub">
     이미 부동산을 가진 사람이<br>
-    "지금 어떻게 해야 하나"를 결정할 수 있게 도와드립니다.<br>
+    "지금 어떻게 해야 하나"를 판단할 수 있게 도와드립니다.<br>
     예측이 아닙니다. 지금 가진 것의 최적화입니다.
   </p>
   <div class="header-price">149,000원</div>
@@ -629,53 +641,123 @@ input[type="range"] {
 
   <div class="notice">
     <strong>1세대 1주택 비과세</strong>란 2년 이상 보유 (+ 거주 2년) 시 양도세가 면제되는 제도입니다.
-    세대원 전체의 주택 보유 현황이 비과세 판단에 영향을 줍니다.<br>
-    <span style="color:#aaa;font-size:13px;">※ 형제/자매·친구 등과 같은 세대라도 각자 별도 세대로 인정될 수 있습니다. 정확한 세대분리 여부는 세무사 확인 필요.</span>
+    세대원 전체의 주택 보유 현황이 비과세 판단에 영향을 줍니다.
   </div>
 
+  <!-- 현재 같은 주소에 누가 살고 있나요 -->
   <div class="field">
-    <label class="field-label required">세대 구성</label>
+    <label class="field-label required">현재 같은 주소에 누가 살고 있나요? (복수 선택 가능)</label>
+    <p class="field-hint">세대원 구성에 따라 합산 주택수가 달라집니다.</p>
     <div class="radio-group col">
-      <div class="radio-item"><input type="radio" name="household" id="hh1" value="단독세대"><label for="hh1"><span class="radio-dot"></span>단독세대 (혼자 세대주)</label></div>
-      <div class="radio-item"><input type="radio" name="household" id="hh2" value="배우자동세대"><label for="hh2"><span class="radio-dot"></span>배우자와 같은 세대</label></div>
-      <div class="radio-item"><input type="radio" name="household" id="hh3" value="배우자자녀동세대"><label for="hh3"><span class="radio-dot"></span>배우자 + 자녀와 같은 세대</label></div>
-      <div class="radio-item"><input type="radio" name="household" id="hh4" value="부모동세대"><label for="hh4"><span class="radio-dot"></span>부모님과 같은 세대</label></div>
-      <div class="radio-item"><input type="radio" name="household" id="hh5" value="자녀동세대"><label for="hh5"><span class="radio-dot"></span>자녀와 같은 세대 (자녀가 세대원)</label></div>
-      <div class="radio-item"><input type="radio" name="household" id="hh6" value="형제동세대"><label for="hh6"><span class="radio-dot"></span>형제/자매와 같은 세대</label></div>
-      <div class="radio-item"><input type="radio" name="household" id="hh7" value="기타동세대"><label for="hh7"><span class="radio-dot"></span>기타 (친구, 지인 등)</label></div>
+      <div class="radio-item"><input type="checkbox" id="hh_alone" name="hh_member" value="혼자" onchange="toggleHousehold()"><label for="hh_alone"><span class="check-box"></span>혼자 거주 (단독세대)</label></div>
+      <div class="radio-item"><input type="checkbox" id="hh_spouse" name="hh_member" value="배우자" onchange="toggleHousehold()"><label for="hh_spouse"><span class="check-box"></span>배우자</label></div>
+      <div class="radio-item"><input type="checkbox" id="hh_child_minor" name="hh_member" value="미성년자녀" onchange="toggleHousehold()"><label for="hh_child_minor"><span class="check-box"></span>미혼 자녀 (만 30세 미만 / 소득 없음)</label></div>
+      <div class="radio-item"><input type="checkbox" id="hh_child_adult" name="hh_member" value="성년자녀" onchange="toggleHousehold()"><label for="hh_child_adult"><span class="check-box"></span>미혼 자녀 (만 30세 이상 또는 소득 있음)</label></div>
+      <div class="radio-item"><input type="checkbox" id="hh_child_married" name="hh_member" value="기혼자녀" onchange="toggleHousehold()"><label for="hh_child_married"><span class="check-box"></span>기혼 자녀 (결혼한 자녀와 동거)</label></div>
+      <div class="radio-item"><input type="checkbox" id="hh_parent_old" name="hh_member" value="부모60이상" onchange="toggleHousehold()"><label for="hh_parent_old"><span class="check-box"></span>부모님 (만 60세 이상) — 동거봉양</label></div>
+      <div class="radio-item"><input type="checkbox" id="hh_parent_young" name="hh_member" value="부모60미만" onchange="toggleHousehold()"><label for="hh_parent_young"><span class="check-box"></span>부모님 (만 60세 미만)</label></div>
+      <div class="radio-item"><input type="checkbox" id="hh_sibling" name="hh_member" value="형제자매" onchange="toggleHousehold()"><label for="hh_sibling"><span class="check-box"></span>형제 / 자매</label></div>
+      <div class="radio-item"><input type="checkbox" id="hh_other" name="hh_member" value="기타동거" onchange="toggleHousehold()"><label for="hh_other"><span class="check-box"></span>기타 (친구, 지인, 사실혼 등)</label></div>
     </div>
   </div>
 
-  <div class="field">
-    <label class="field-label required">배우자 부동산 보유 여부</label>
-    <div class="radio-group">
-      <div class="radio-item"><input type="radio" name="spouse_property" id="sp1" value="없음"><label for="sp1"><span class="radio-dot"></span>없음</label></div>
-      <div class="radio-item"><input type="radio" name="spouse_property" id="sp2" value="있음" onchange="toggleSpouseProperty()"><label for="sp2"><span class="radio-dot"></span>있음</label></div>
-      <div class="radio-item"><input type="radio" name="spouse_property" id="sp3" value="미혼/해당없음"><label for="sp3"><span class="radio-dot"></span>미혼/해당 없음</label></div>
+  <!-- 배우자 선택 시 -->
+  <div class="conditional" id="cond_hh_spouse">
+    <div class="field">
+      <label class="field-label">배우자 상태</label>
+      <div class="radio-group col">
+        <div class="radio-item"><input type="radio" name="spouse_status" id="ss1" value="법률혼동거"><label for="ss1"><span class="radio-dot"></span>법률혼 배우자 (같은 주소)</label></div>
+        <div class="radio-item"><input type="radio" name="spouse_status" id="ss2" value="법률혼별거"><label for="ss2"><span class="radio-dot"></span>법률혼 배우자 (주소 다름 / 별거)</label></div>
+        <div class="radio-item"><input type="radio" name="spouse_status" id="ss3" value="사실혼"><label for="ss3"><span class="radio-dot"></span>사실혼 배우자</label></div>
+      </div>
+      <p class="field-hint">※ 법률혼 배우자는 주소가 달라도 같은 세대로 봅니다. 배우자 명의 주택도 합산됩니다.</p>
     </div>
-    <div class="conditional" id="cond_spouse_property">
-      <div class="field">
-        <label class="field-label">배우자 보유 주택 수</label>
-        <div class="radio-group">
-          <div class="radio-item"><input type="radio" name="spouse_houses" id="sh1" value="1채"><label for="sh1"><span class="radio-dot"></span>1채</label></div>
-          <div class="radio-item"><input type="radio" name="spouse_houses" id="sh2" value="2채이상"><label for="sh2"><span class="radio-dot"></span>2채 이상</label></div>
+    <div class="field">
+      <label class="field-label">배우자 명의 주택 보유 여부</label>
+      <div class="radio-group">
+        <div class="radio-item"><input type="radio" name="spouse_property" id="sp1" value="없음"><label for="sp1"><span class="radio-dot"></span>없음</label></div>
+        <div class="radio-item"><input type="radio" name="spouse_property" id="sp2" value="있음" onchange="toggleSpouseProperty()"><label for="sp2"><span class="radio-dot"></span>있음</label></div>
+      </div>
+      <div class="conditional" id="cond_spouse_property">
+        <div class="field">
+          <label class="field-label">배우자 보유 주택 수</label>
+          <div class="radio-group">
+            <div class="radio-item"><input type="radio" name="spouse_houses" id="sh1" value="1채"><label for="sh1"><span class="radio-dot"></span>1채</label></div>
+            <div class="radio-item"><input type="radio" name="spouse_houses" id="sh2" value="2채이상"><label for="sh2"><span class="radio-dot"></span>2채 이상</label></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- 미혼 성년 자녀 (세대분리 가능) -->
+  <div class="conditional" id="cond_hh_child_adult">
+    <div class="field">
+      <label class="field-label">성년 자녀 세대분리 여부</label>
+      <div class="radio-group col">
+        <div class="radio-item"><input type="radio" name="child_separation" id="cs1" value="분리완료"><label for="cs1"><span class="radio-dot"></span>세대분리 완료 (주민등록 따로)</label></div>
+        <div class="radio-item"><input type="radio" name="child_separation" id="cs2" value="미분리"><label for="cs2"><span class="radio-dot"></span>세대분리 안 됨 (같은 주민등록)</label></div>
+        <div class="radio-item"><input type="radio" name="child_separation" id="cs3" value="모름"><label for="cs3"><span class="radio-dot"></span>모름</label></div>
+      </div>
+      <p class="field-hint">※ 만 30세 이상 or 소득 있는 미혼 자녀는 세대분리 시 별도 세대로 인정됩니다.</p>
+    </div>
+    <div class="field">
+      <label class="field-label">해당 자녀 주택 보유 여부</label>
+      <div class="radio-group">
+        <div class="radio-item"><input type="radio" name="child_adult_house" id="ca1" value="없음"><label for="ca1"><span class="radio-dot"></span>없음</label></div>
+        <div class="radio-item"><input type="radio" name="child_adult_house" id="ca2" value="있음"><label for="ca2"><span class="radio-dot"></span>있음</label></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 부모님 60세 이상 (동거봉양 특례) -->
+  <div class="conditional" id="cond_hh_parent_old">
+    <div class="field">
+      <label class="field-label" style="color:#c9a84c">⚡ 동거봉양 합가 특례 해당 가능</label>
+      <p class="field-hint">60세 이상 부모님을 모시기 위해 합가한 경우, 합가일로부터 5년 이내 매도 시 1주택으로 봅니다.</p>
+      <label class="field-label">합가(같이 살기 시작한) 시점</label>
+      <input type="text" id="parent_merge_date" placeholder="예: 2022년 3월">
+    </div>
+    <div class="field">
+      <label class="field-label">부모님 명의 주택 보유 여부</label>
+      <div class="radio-group">
+        <div class="radio-item"><input type="radio" name="parent_house" id="ph1" value="없음"><label for="ph1"><span class="radio-dot"></span>없음</label></div>
+        <div class="radio-item"><input type="radio" name="parent_house" id="ph2" value="있음"><label for="ph2"><span class="radio-dot"></span>있음</label></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 부모님 60세 미만 -->
+  <div class="conditional" id="cond_hh_parent_young">
+    <div class="field">
+      <label class="field-label">부모님 명의 주택 보유 여부</label>
+      <div class="radio-group">
+        <div class="radio-item"><input type="radio" name="parent_young_house" id="pyh1" value="없음"><label for="pyh1"><span class="radio-dot"></span>없음</label></div>
+        <div class="radio-item"><input type="radio" name="parent_young_house" id="pyh2" value="있음"><label for="pyh2"><span class="radio-dot"></span>있음 (주택수 합산됨)</label></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 기타 동거인 -->
+  <div class="conditional" id="cond_hh_other">
+    <div class="field">
+      <p class="field-hint">※ 친구·지인·사실혼 배우자는 법적으로 별도 세대입니다. 주택수 합산되지 않습니다.<br>단, 사실혼 배우자의 경우 세무사 확인을 권장합니다.</p>
+    </div>
+  </div>
+
+  <!-- 1세대 1주택 비과세 요건 -->
   <div class="field">
-    <label class="field-label required">1세대 1주택 비과세 요건 충족 여부 (본인 판단)</label>
+    <label class="field-label required">1세대 1주택 비과세 요건 (본인 판단)</label>
     <div class="radio-group col">
       <div class="radio-item"><input type="radio" name="nontax_eligible" id="ne1" value="충족"><label for="ne1"><span class="radio-dot"></span>충족한다고 생각함</label></div>
       <div class="radio-item"><input type="radio" name="nontax_eligible" id="ne2" value="미충족"><label for="ne2"><span class="radio-dot"></span>충족하지 못함 (다주택 등)</label></div>
-      <div class="radio-item"><input type="radio" name="nontax_eligible" id="ne3" value="모름"><label for="ne3"><span class="radio-dot"></span>잘 모름</label></div>
+      <div class="radio-item"><input type="radio" name="nontax_eligible" id="ne3" value="모름"><label for="ne3"><span class="radio-dot"></span>잘 모름 — 자동 판단 요청</label></div>
     </div>
     <p class="field-hint">잘 모르셔도 됩니다. 입력하신 정보로 자동 판단합니다.</p>
   </div>
 
   <div class="field">
-    <label class="field-label">고가주택 여부 (공시가 12억 초과)</label>
+    <label class="field-label">고가주택 여부 (시세 12억 초과)</label>
     <div class="radio-group">
       <div class="radio-item"><input type="radio" name="high_value" id="hv1" value="12억이하"><label for="hv1"><span class="radio-dot"></span>12억 이하</label></div>
       <div class="radio-item"><input type="radio" name="high_value" id="hv2" value="12억초과"><label for="hv2"><span class="radio-dot"></span>12억 초과</label></div>
@@ -885,8 +967,102 @@ input[type="range"] {
 let currentStep = 1;
 const totalSteps = 7;
 
-// ── 단계 이동
-function goStep(n) {
+// 페이지 로드 시 저장된 데이터 복원
+window.addEventListener('DOMContentLoaded', () => {
+  loadSaved();
+});
+
+// ── 세대 구성 체크박스 토글
+function toggleHousehold() {
+  const checked = [...document.querySelectorAll('input[name="hh_member"]:checked')].map(el => el.value);
+  const show = (id, condition) => document.getElementById(id)?.classList.toggle('show', condition);
+
+  // 혼자 선택 시 다른 항목 해제
+  if (document.getElementById('hh_alone')?.checked) {
+    document.querySelectorAll('input[name="hh_member"]').forEach(el => {
+      if (el.value !== '혼자') el.checked = false;
+    });
+  } else {
+    document.getElementById('hh_alone').checked = false;
+  }
+
+  const has = v => checked.includes(v);
+  show('cond_hh_spouse',        has('배우자'));
+  show('cond_hh_child_adult',   has('성년자녀'));
+  show('cond_hh_parent_old',    has('부모60이상'));
+  show('cond_hh_parent_young',  has('부모60미만'));
+  show('cond_hh_other',         has('기타동거'));
+}
+
+// ── 단계별 자동저장 (sessionStorage)
+const SAVE_KEY = 'pandan_form_v2';
+
+function saveStep(step) {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(SAVE_KEY) || '{}');
+    const data = collectData();
+    saved['step_' + step] = data;
+    saved['last_step'] = step;
+    saved['saved_at'] = new Date().toISOString();
+    sessionStorage.setItem(SAVE_KEY, JSON.stringify(saved));
+    console.log('[판단] 자동저장 완료 — step', step);
+  } catch(e) {
+    console.warn('[판단] 저장 실패:', e);
+  }
+}
+
+function loadSaved() {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(SAVE_KEY) || '{}');
+    if (!saved.last_step) return;
+    // 마지막 저장 데이터로 복원
+    const data = saved['step_' + saved.last_step] || {};
+    restoreForm(data);
+    console.log('[판단] 저장된 데이터 복원 — step', saved.last_step);
+  } catch(e) {
+    console.warn('[판단] 복원 실패:', e);
+  }
+}
+
+function restoreForm(data) {
+  // text/number 입력값 복원
+  const fields = ['location','current_value','acquisition_price','acquisition_date',
+    'other_houses','debt_amount','gift_acq_value','redev_original_price',
+    'redev_premium_amount','redev_allotment_price','redev_assessed_value',
+    'redev_mgmt_date','redev_move_in_date','presale_date','parent_merge_date',
+    'gift_total','inheritance_value','heir_count','main_concern','extra_question',
+    'special_note','user_name','user_email','user_phone'];
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && data[id]) {
+      el.value = data[id];
+      if (el.getAttribute('oninput')) showMoneyPreview(id);
+    }
+  });
+  // radio 복원
+  Object.keys(data).forEach(key => {
+    const val = data[key];
+    if (typeof val === 'string' && val) {
+      const el = document.querySelector(`input[name="${key}"][value="${val}"]`);
+      if (el) { el.checked = true; el.dispatchEvent(new Event('change')); }
+    }
+  });
+  // checkbox 복원
+  if (Array.isArray(data.household_members)) {
+    data.household_members.forEach(val => {
+      const el = document.querySelector(`input[name="hh_member"][value="${val}"]`);
+      if (el) { el.checked = true; }
+    });
+    toggleHousehold();
+  }
+  // 시나리오 체크박스
+  if (Array.isArray(data.scenarios)) {
+    data.scenarios.forEach(val => {
+      const el = document.querySelector(`input[name="scenarios"][value="${val}"]`);
+      if (el) el.checked = true;
+    });
+  }
+}
   // done 단계(이미 완료)는 자유롭게 이동 가능, 아직 안 간 앞 단계는 금지
   const el = document.querySelector(`.progress-step[data-step="${n}"]`);
   if (n > currentStep && !el?.classList.contains('done')) return;
@@ -899,11 +1075,31 @@ function goStep(n) {
 
 function nextStep(from) {
   if (!validateStep(from)) return;
+  saveStep(from);  // 단계 넘어갈 때 자동저장
+  showSaveToast(from);
   document.getElementById(`step-${from}`).classList.remove('active');
   currentStep = from + 1;
   document.getElementById(`step-${currentStep}`).classList.add('active');
   updateProgress();
   window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function showSaveToast(step) {
+  let toast = document.getElementById('saveToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'saveToast';
+    toast.style.cssText = `
+      position:fixed; bottom:24px; right:24px; z-index:9999;
+      background:#1a3a1a; color:#7fff7f; border:1px solid #3a7a3a;
+      padding:10px 18px; border-radius:8px; font-size:14px;
+      opacity:0; transition:opacity .3s; pointer-events:none;
+    `;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = `✓ ${step}단계 저장됨`;
+  toast.style.opacity = '1';
+  setTimeout(() => toast.style.opacity = '0', 2000);
 }
 
 function prevStep(from) {
@@ -1127,10 +1323,17 @@ function collectData() {
     redev_contribution: r('redev_contribution'),
     was_presale: r('was_presale'),
     presale_date: v('presale_date'),
-    // 4단계
-    household: r('household'),
+    // 4단계 — 세대 구성 (체크박스 복수선택)
+    household_members: [...document.querySelectorAll('input[name="hh_member"]:checked')].map(el => el.value),
+    household: [...document.querySelectorAll('input[name="hh_member"]:checked')].map(el => el.value).join(','),
+    spouse_status: r('spouse_status'),
     spouse_property: r('spouse_property'),
     spouse_houses: r('spouse_houses'),
+    child_separation: r('child_separation'),
+    child_adult_house: r('child_adult_house'),
+    parent_merge_date: v('parent_merge_date'),
+    parent_house: r('parent_house'),
+    parent_young_house: r('parent_young_house'),
     nontax_eligible: r('nontax_eligible'),
     high_value: r('high_value'),
     // 5단계

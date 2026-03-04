@@ -369,14 +369,14 @@ input[type="range"] {
   </div>
 
   <div class="field">
-    <label class="field-label required">현재 시장가치 (만원)</label>
-    <input type="number" id="current_value" placeholder="예: 80000 (8억)">
+    <label class="field-label required">현재 시장가치 (백만원 단위)</label>
+    <input type="text" id="current_value" placeholder="예: 1600 (16억), 850 (8억5천)" oninput="showMoneyPreview('current_value')">
     <p class="field-hint">KB시세, 호가, 공시지가 중 가장 현실적인 금액 기준</p>
   </div>
 
   <div class="field">
-    <label class="field-label required">취득가 (만원)</label>
-    <input type="number" id="acquisition_price" placeholder="예: 50000 (5억)">
+    <label class="field-label required">취득가</label>
+    <input type="text" id="acquisition_price" placeholder="예: 500 (5억), 320 (3억2천)" oninput="showMoneyPreview('acquisition_price')">
     <p class="field-hint">실제 구입금액 (취득세·부대비용 제외)</p>
   </div>
 
@@ -465,7 +465,7 @@ input[type="range"] {
     <div class="conditional" id="cond_debt">
       <div class="field">
         <label class="field-label">채무 잔액 (만원)</label>
-        <input type="number" id="debt_amount" placeholder="예: 20000 (2억)">
+        <input type="text" id="debt_amount" placeholder="예: 200 (2억), 150 (1억5천)" oninput="showMoneyPreview('debt_amount')">
       </div>
     </div>
   </div>
@@ -529,7 +529,7 @@ input[type="range"] {
     <div class="conditional" id="cond_gift_acq">
       <div class="field">
         <label class="field-label">취득 당시 증여/상속 평가액 (만원)</label>
-        <input type="number" id="gift_acq_value" placeholder="예: 40000 (4억)">
+        <input type="text" id="gift_acq_value" placeholder="예: 400 (4억), 350 (3억5천)" oninput="showMoneyPreview('gift_acq_value')">
         <p class="field-hint">취득 당시 기준시가 또는 감정평가액</p>
       </div>
     </div>
@@ -565,7 +565,7 @@ input[type="range"] {
     <div class="conditional" id="cond_redev">
       <div class="field">
         <label class="field-label">종전주택(빌라/구축) 실제 매입가 (만원)</label>
-        <input type="number" id="redev_original_price" placeholder="예: 23000 (2억3천)">
+        <input type="text" id="redev_original_price" placeholder="예: 230 (2억3천)" oninput="showMoneyPreview('redev_original_price')">
         <p class="field-hint">재개발 구역 내 집을 처음 살 때 지불한 금액</p>
       </div>
       <div class="field">
@@ -575,16 +575,16 @@ input[type="range"] {
           <div class="radio-item"><input type="radio" name="redev_premium" id="rp2" value="없음" onchange="toggleRedevPremium()"><label for="rp2"><span class="radio-dot"></span>프리미엄 없음</label></div>
         </div>
         <div class="conditional" id="cond_redev_premium">
-          <input type="number" id="redev_premium_amount" placeholder="프리미엄 금액 (만원), 예: 20000 (2억)">
+          <input type="text" id="redev_premium_amount" placeholder="예: 200 (2억), 150 (1억5천)" oninput="showMoneyPreview('redev_premium_amount')">
         </div>
       </div>
       <div class="field">
         <label class="field-label">조합원 분양가 (만원)</label>
-        <input type="number" id="redev_allotment_price" placeholder="예: 58000 (5억8천)">
+        <input type="text" id="redev_allotment_price" placeholder="예: 580 (5억8천)" oninput="showMoneyPreview('redev_allotment_price')">
       </div>
       <div class="field">
         <label class="field-label">종전주택 감정평가 인정액 (만원)</label>
-        <input type="number" id="redev_assessed_value" placeholder="예: 20000 (2억)">
+        <input type="text" id="redev_assessed_value" placeholder="예: 200 (2억)" oninput="showMoneyPreview('redev_assessed_value')">
         <p class="field-hint">분양가에서 차감해주는 금액 (권리가액)</p>
       </div>
       <div class="field">
@@ -629,7 +629,8 @@ input[type="range"] {
 
   <div class="notice">
     <strong>1세대 1주택 비과세</strong>란 2년 이상 보유 (+ 거주 2년) 시 양도세가 면제되는 제도입니다.
-    정확한 세대 구성이 중요합니다.
+    세대원 전체의 주택 보유 현황이 비과세 판단에 영향을 줍니다.<br>
+    <span style="color:#aaa;font-size:13px;">※ 형제/자매·친구 등과 같은 세대라도 각자 별도 세대로 인정될 수 있습니다. 정확한 세대분리 여부는 세무사 확인 필요.</span>
   </div>
 
   <div class="field">
@@ -637,8 +638,11 @@ input[type="range"] {
     <div class="radio-group col">
       <div class="radio-item"><input type="radio" name="household" id="hh1" value="단독세대"><label for="hh1"><span class="radio-dot"></span>단독세대 (혼자 세대주)</label></div>
       <div class="radio-item"><input type="radio" name="household" id="hh2" value="배우자동세대"><label for="hh2"><span class="radio-dot"></span>배우자와 같은 세대</label></div>
-      <div class="radio-item"><input type="radio" name="household" id="hh3" value="부모동세대"><label for="hh3"><span class="radio-dot"></span>부모님과 같은 세대</label></div>
-      <div class="radio-item"><input type="radio" name="household" id="hh4" value="자녀동세대"><label for="hh4"><span class="radio-dot"></span>자녀와 같은 세대</label></div>
+      <div class="radio-item"><input type="radio" name="household" id="hh3" value="배우자자녀동세대"><label for="hh3"><span class="radio-dot"></span>배우자 + 자녀와 같은 세대</label></div>
+      <div class="radio-item"><input type="radio" name="household" id="hh4" value="부모동세대"><label for="hh4"><span class="radio-dot"></span>부모님과 같은 세대</label></div>
+      <div class="radio-item"><input type="radio" name="household" id="hh5" value="자녀동세대"><label for="hh5"><span class="radio-dot"></span>자녀와 같은 세대 (자녀가 세대원)</label></div>
+      <div class="radio-item"><input type="radio" name="household" id="hh6" value="형제동세대"><label for="hh6"><span class="radio-dot"></span>형제/자매와 같은 세대</label></div>
+      <div class="radio-item"><input type="radio" name="household" id="hh7" value="기타동세대"><label for="hh7"><span class="radio-dot"></span>기타 (친구, 지인 등)</label></div>
     </div>
   </div>
 
@@ -701,7 +705,7 @@ input[type="range"] {
     <div class="conditional" id="cond_gift_history">
       <div class="field">
         <label class="field-label">기증여 합계 금액 (만원)</label>
-        <input type="number" id="gift_total" placeholder="예: 5000 (5천만원)">
+        <input type="text" id="gift_total" placeholder="예: 50 (5천만), 100 (1억)" oninput="showMoneyPreview('gift_total')">
         <p class="field-hint">증여세 합산과세 적용 (10년 이내 합산)</p>
       </div>
     </div>
@@ -725,7 +729,7 @@ input[type="range"] {
     <div class="conditional" id="cond_inheritance">
       <div class="field">
         <label class="field-label">예상 상속 자산 규모 (만원, 부동산 포함)</label>
-        <input type="number" id="inheritance_value" placeholder="예: 200000 (20억)">
+        <input type="text" id="inheritance_value" placeholder="예: 2000 (20억), 1550 (15억5천)" oninput="showMoneyPreview('inheritance_value')">
       </div>
       <div class="field">
         <label class="field-label">상속인 수</label>
@@ -815,7 +819,7 @@ input[type="range"] {
   <div class="step-desc">리포트는 입력하신 이메일로 발송됩니다.</div>
 
   <div class="notice">
-    <strong>발송 안내:</strong> 리포트는 결제 완료 후 <strong>다음날 오후 3시 28분</strong>에 이메일로 발송됩니다.<br>
+    <strong>발송 안내:</strong> 리포트는 정확한 분석 완료 후 <strong>다음날 중으로</strong> 이메일로 발송됩니다.<br>
     본 리포트는 AI 세금 시뮬레이션입니다. 중요한 결정은 반드시 세무사와 상담하십시오.
   </div>
 
@@ -853,7 +857,7 @@ input[type="range"] {
       결제하고 리포트 신청하기 — 149,000원
     </button>
     <p style="text-align:center;font-size:12px;color:var(--dim);margin-top:16px;">
-      토스페이먼츠 결제창이 열립니다
+      안전한 결제 후 신청이 완료됩니다
     </p>
   </div>
 
@@ -865,11 +869,12 @@ input[type="range"] {
 
 <!-- SUCCESS -->
 <div class="success-screen" id="successScreen">
-  <div class="success-icon">📋</div>
+  <div class="success-icon">✅</div>
   <div class="success-title">신청이 완료되었습니다</div>
   <p class="success-desc">
-    리포트는 내일 오후 3시 28분에<br>
-    입력하신 이메일로 발송됩니다.<br><br>
+    리포트는 정확한 분석 완료 후 내일 중으로<br>
+    <strong id="success_email" style="color:var(--gold)"></strong><br>
+    으로 발송됩니다.<br><br>
     <span style="color:var(--gold)">한 채가 수억입니다.<br>그 결정에 최선을 다하겠습니다.</span>
   </p>
 </div>
@@ -926,7 +931,7 @@ function validateStep(step) {
   if (step === 1) {
     if (!document.querySelector('input[name="property_type"]:checked')) { alert('부동산 유형을 선택해주세요.'); return false; }
     if (!document.getElementById('location').value.trim()) { alert('소재지를 입력해주세요.'); return false; }
-    if (!document.getElementById('current_value').value) { alert('현재 시장가치를 입력해주세요.'); return false; }
+    if (!document.getElementById('current_value').value) { alert('현재 시장가치 (백만원 단위)를 입력해주세요.'); return false; }
     if (!document.getElementById('acquisition_price').value) { alert('취득가를 입력해주세요.'); return false; }
     if (!document.getElementById('acquisition_date').value) { alert('취득 연월을 입력해주세요.'); return false; }
     if (!document.querySelector('input[name="total_houses"]:checked')) { alert('보유 주택 수를 선택해주세요.'); return false; }
@@ -1014,9 +1019,72 @@ document.getElementById('agree_disclaimer').addEventListener('change', function(
 });
 
 // ── 데이터 수집
+// ── 금액 파싱: 백만원 단위 입력 → 만원 단위 숫자로 변환
+// 입력: "16" → 16억(160,000만원), "16.5" → 16억5천, "1600" → 16억
+// 단위: 백만원 (예: 16 = 16억, 1.6 = 1억6천만)
+function parseMoney(str) {
+  if (!str) return '';
+  str = str.trim().replace(/,/g, '').replace(/\s/g, '');
+  // 순수 숫자(소수 포함) → 백만원 단위로 해석 → 만원으로 변환
+  if (/^\d+(\.\d+)?$/.test(str)) {
+    return String(Math.round(parseFloat(str) * 100)); // 백만원 × 100 = 만원
+  }
+  // 한글 표기 (억/천만/만 등) → 만원으로 변환
+  let total = 0;
+  const jo = str.match(/(\d+\.?\d*)조/);
+  if (jo) total += parseFloat(jo[1]) * 1_000_000;
+  const eok = str.match(/(\d+\.?\d*)억/);
+  if (eok) total += parseFloat(eok[1]) * 10_000;
+  const chunman = str.match(/(\d+\.?\d*)천만/);
+  if (chunman) total += parseFloat(chunman[1]) * 1_000;
+  else {
+    const chun = str.match(/억(\d+\.?\d*)천(?!만)/);
+    if (chun) total += parseFloat(chun[1]) * 1_000;
+    else {
+      const chunOnly = str.match(/^(\d+\.?\d*)천(?!만)/);
+      if (chunOnly) total += parseFloat(chunOnly[1]) * 1_000;
+    }
+  }
+  const man = str.match(/(\d+\.?\d*)만/);
+  if (man) total += parseFloat(man[1]);
+  return total > 0 ? String(Math.round(total)) : str;
+}
+
+// 백만원 단위 → 읽기 쉬운 한글 금액
+function formatWon(manwon) {
+  const won = manwon * 10000;
+  const eok = Math.floor(won / 100_000_000);
+  const chun = Math.floor((won % 100_000_000) / 10_000_000);
+  const rest = Math.floor((won % 10_000_000) / 10_000);
+  let result = '';
+  if (eok > 0) result += eok + '억 ';
+  if (chun > 0) result += chun + '천';
+  if (rest > 0) result += rest + '백';
+  return result.trim() + '만원';
+}
+
+// 금액 필드 실시간 미리보기
+function showMoneyPreview(id) {
+  const el = document.getElementById(id);
+  let preview = document.getElementById(id + '_preview');
+  if (!preview) {
+    preview = document.createElement('p');
+    preview.id = id + '_preview';
+    preview.style.cssText = 'font-size:13px;color:#c9a84c;margin-top:5px;';
+    el.parentNode.insertBefore(preview, el.nextSibling);
+  }
+  const manwon = parseInt(parseMoney(el.value));
+  if (manwon > 0) {
+    preview.textContent = '= ' + formatWon(manwon);
+  } else {
+    preview.textContent = '';
+  }
+}
+
 function collectData() {
   const r = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
   const v = (id) => document.getElementById(id)?.value || '';
+  const m = (id) => parseMoney(document.getElementById(id)?.value || ''); // 금액 파싱
   const checks = (ids) => ids.filter(id => document.getElementById(id)?.checked).map(id => document.getElementById(id).value);
 
   return {
@@ -1027,8 +1095,8 @@ function collectData() {
     // 1단계
     property_type: r('property_type'),
     location: v('location'),
-    current_value: v('current_value'),
-    acquisition_price: v('acquisition_price'),
+    current_value: m('current_value'),
+    acquisition_price: m('acquisition_price'),
     acquisition_date: v('acquisition_date'),
     total_houses: r('total_houses'),
     other_houses: v('other_houses'),
@@ -1038,22 +1106,22 @@ function collectData() {
     usage: r('usage'),
     residence_years: r('residence_years'),
     has_debt: r('has_debt'),
-    debt_amount: v('debt_amount'),
+    debt_amount: m('debt_amount'),
     rental_business: r('rental_business'),
     rental_obligation: r('rental_obligation'),
     rental_type: r('rental_type'),
     corp_owned: r('corp_owned'),
     // 3단계
     acquisition_method: r('acquisition_method'),
-    gift_acq_value: v('gift_acq_value'),
+    gift_acq_value: m('gift_acq_value'),
     acq_regulated: r('acq_regulated'),
     curr_regulated: r('curr_regulated'),
     redevelopment: r('redevelopment'),
-    redev_original_price: v('redev_original_price'),
+    redev_original_price: m('redev_original_price'),
     redev_premium: r('redev_premium'),
-    redev_premium_amount: v('redev_premium_amount'),
-    redev_allotment_price: v('redev_allotment_price'),
-    redev_assessed_value: v('redev_assessed_value'),
+    redev_premium_amount: m('redev_premium_amount'),
+    redev_allotment_price: m('redev_allotment_price'),
+    redev_assessed_value: m('redev_assessed_value'),
     redev_mgmt_date: v('redev_mgmt_date'),
     redev_move_in_date: v('redev_move_in_date'),
     redev_contribution: r('redev_contribution'),
@@ -1067,10 +1135,10 @@ function collectData() {
     high_value: r('high_value'),
     // 5단계
     gift_history: r('gift_history'),
-    gift_total: v('gift_total'),
+    gift_total: m('gift_total'),
     burden_gift: r('burden_gift'),
     inheritance: r('inheritance'),
-    inheritance_value: v('inheritance_value'),
+    inheritance_value: m('inheritance_value'),
     heir_count: v('heir_count'),
     gift_targets: checks(['gift_to_spouse','gift_to_child','gift_to_other','gift_to_none']),
     special_note: v('special_note'),
@@ -1086,9 +1154,10 @@ function collectData() {
 async function submitForm() {
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = '처리 중...';
+  btn.textContent = '⏳ 리포트 생성 요청 중...';
 
   const data = collectData();
+  console.log('[판단] 전송 데이터:', data);
 
   try {
     const res = await fetch('https://pandan-production.up.railway.app/generate', {
@@ -1096,20 +1165,47 @@ async function submitForm() {
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify(data)
     });
+
+    console.log('[판단] 서버 응답 상태:', res.status);
     const json = await res.json();
-    if (res.ok) {
-      document.querySelector('.form-wrap').style.display = 'none';
-      document.getElementById('successScreen').classList.add('show');
+    console.log('[판단] 서버 응답 내용:', json);
+
+    if (res.ok || res.status === 202) {
+      // 성공 — 폼 숨기고 완료 화면
+      document.querySelectorAll('.step').forEach(el => el.style.display = 'none');
+      document.querySelector('.progress-bar')?.style && (document.querySelector('.progress-bar').style.display = 'none');
+      const success = document.getElementById('successScreen');
+      success.style.display = 'block';
+      success.style.opacity = '1';
+      success.classList.add('show');
+      // 이메일 주소 표시
+      const emailEl = document.getElementById('success_email');
+      if (emailEl) emailEl.textContent = data.email;
+      window.scrollTo({top: 0, behavior: 'smooth'});
     } else {
-      alert(json.error || '오류가 발생했습니다. 다시 시도해주세요.');
+      const msg = json.error || json.message || '오류가 발생했습니다. 다시 시도해주세요.';
+      showError(msg);
       btn.disabled = false;
-      btn.textContent = '결제하고 리포트 신청하기 — 149,000원';
+      btn.textContent = '리포트 신청하기 — 149,000원';
     }
   } catch(e) {
-    alert('서버 연결 오류가 발생했습니다.');
+    console.error('[판단] fetch 오류:', e);
+    showError('서버 연결 오류가 발생했습니다. 잠시 후 다시 시도해주세요.\n\n(' + e.message + ')');
     btn.disabled = false;
-    btn.textContent = '결제하고 리포트 신청하기 — 149,000원';
+    btn.textContent = '리포트 신청하기 — 149,000원';
   }
+}
+
+function showError(msg) {
+  let el = document.getElementById('errorMsg');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'errorMsg';
+    el.style.cssText = 'background:#5c1a1a;color:#fff;padding:16px 20px;border-radius:8px;margin:16px 0;font-size:15px;line-height:1.6;';
+    document.getElementById('submitBtn').parentNode.insertBefore(el, document.getElementById('submitBtn'));
+  }
+  el.textContent = '⚠️ ' + msg;
+  el.scrollIntoView({behavior:'smooth'});
 }
 </script>
 </body>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>판단 테스트 — 어머니 케이스</title>
+<style>
+body { background:#0f0f0d; color:#e8e4d8; font-family:monospace; padding:40px; }
+h2 { color:#c9a84c; }
+.btn { background:#c9a84c; border:none; color:#0f0f0d; padding:14px 32px; font-size:16px; cursor:pointer; border-radius:3px; margin:8px 4px; }
+.btn:hover { background:#e0bc60; }
+pre { background:#1a1a17; border:1px solid rgba(201,168,76,0.2); padding:20px; border-radius:4px; font-size:13px; overflow:auto; max-height:600px; white-space:pre-wrap; }
+.status { padding:10px; border-radius:3px; margin:10px 0; font-size:14px; }
+.ok { background:rgba(107,191,142,0.15); border:1px solid rgba(107,191,142,0.4); color:#6bbf8e; }
+.err { background:rgba(224,92,92,0.15); border:1px solid rgba(224,92,92,0.4); color:#e05c5c; }
+.section { margin-bottom:32px; }
+label { color:rgba(232,228,216,0.5); font-size:13px; display:block; margin-bottom:6px; }
+input { background:#1a1a17; border:1px solid rgba(201,168,76,0.2); color:#e8e4d8; padding:10px; border-radius:3px; width:400px; font-family:monospace; }
+</style>
+</head>
+<body>
+
+<h2>판단 — 어머니 케이스 테스트</h2>
+<p style="color:rgba(232,228,216,0.5); font-size:14px;">63년생 · 3주택 (개봉동 거주 / 원효로 임대 / 광명 재개발)</p>
+
+<div class="section">
+  <label>서버 주소</label>
+  <input type="text" id="server_url" value="https://web-production-7cef2.up.railway.app">
+</div>
+
+<button class="btn" onclick="testHealth()">① Health 체크</button>
+<button class="btn" onclick="testCalculate()">② 세금 계산 테스트</button>
+<button class="btn" onclick="testSellOrder()">③ 매도 순서 테스트</button>
+
+<div id="status"></div>
+<pre id="result">결과가 여기 표시됩니다</pre>
+
+<script>
+const BASE = () => document.getElementById('server_url').value.trim();
+
+// ── 어머니 케이스 페이로드 ──
+const PAYLOAD = {
+  user: {
+    name: "박영은",
+    birth: "1963-05-15",
+    email: "jikeunyang@bettervision.co.kr",
+    phone: "010-0000-0000",
+    region: "서울특별시"
+  },
+  household: {
+    hasSpouse: "아니오",
+    spouseHouse: "아니오",
+    spouseHouseCount: "0",
+    familyHouse: "예",
+    familyHouseTypes: ["세대분리자녀"]
+  },
+  houses: [
+    {
+      id: 1,
+      location: "서울 구로구 개봉동",
+      type: "아파트",
+      area: 84,
+      acqDate: "2005-03-15",
+      acqCause: "매매",
+      acqPrice: "25000",
+      acqUnit: "만원",
+      sellPrice: "110000",
+      sellUnit: "만원",
+      pubPrice: "77000",
+      pubUnit: "만원",
+      adjArea: "예",
+      adjAreaNow: "아니오",
+      jointOwn: "아니오",
+      debtYn: "아니오",
+      liveStatus: "예",
+      liveStart: "2005-03-15",
+      liveEnd: "",
+      rentStatus: "아니오",
+      rentalReg: "아니오",
+      redevStatus: "아니오"
+    },
+    {
+      id: 2,
+      location: "서울 용산구 원효로",
+      type: "아파트",
+      area: 59,
+      acqDate: "2018-06-01",
+      acqCause: "매매",
+      acqPrice: "45000",
+      acqUnit: "만원",
+      sellPrice: "85000",
+      sellUnit: "만원",
+      pubPrice: "59500",
+      pubUnit: "만원",
+      adjArea: "예",
+      adjAreaNow: "예",
+      jointOwn: "아니오",
+      debtYn: "아니오",
+      liveStatus: "아니오",
+      rentStatus: "예",
+      rentalReg: "예",
+      rentalRegDate: "2018-09-01",
+      rentalRegType: "장기일반8년",
+      rentalRegExpire: "2027-09-01",
+      redevStatus: "아니오"
+    },
+    {
+      id: 3,
+      location: "경기도 광명시",
+      type: "아파트",
+      area: 74,
+      acqDate: "2012-08-20",
+      acqCause: "매매",
+      acqPrice: "18000",
+      acqUnit: "만원",
+      sellPrice: "55000",
+      sellUnit: "만원",
+      pubPrice: "38500",
+      pubUnit: "만원",
+      adjArea: "아니오",
+      adjAreaNow: "아니오",
+      jointOwn: "아니오",
+      debtYn: "아니오",
+      liveStatus: "아니오",
+      rentStatus: "아니오",
+      rentalReg: "아니오",
+      redevStatus: "예",
+      redevStage: "사업시행인가",
+      redevMgmtDate: "",
+      redevMoveIn: "2030-06-01"
+    }
+  ],
+  plan: {
+    sellTargets: ["1", "2"],
+    sellTiming: "2년내",
+    sellReasons: ["세금부담", "중과회피"],
+    scenarios: ["5.9전", "매도순서"],
+    priceGrowth: "3",
+    temp2house: "아니오",
+    mergeType: "해당없음",
+    giftPlan: "아니오",
+    inheritPlan: "아니오",
+    familyMembers: [
+      {
+        fid: 1,
+        relation: "직계존속",
+        name: "아들",
+        houseCount: "0",
+        specialSupply: "예"
+      }
+    ],
+    ruralHouse: "아니오",
+    memo: "원효로 임대의무기간 2027.9 만료 후 매도 예정. 동생 장애인 특별공급 대기 중."
+  }
+};
+
+function setStatus(msg, isOk) {
+  document.getElementById('status').innerHTML =
+    `<div class="status ${isOk ? 'ok' : 'err'}">${msg}</div>`;
+}
+
+async function testHealth() {
+  try {
+    const res = await fetch(`${BASE()}/health`);
+    const data = await res.json();
+    setStatus(`✅ 서버 응답: ${JSON.stringify(data)}`, true);
+    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+  } catch(e) {
+    setStatus(`❌ 연결 실패: ${e.message}`, false);
+  }
+}
+
+async function testCalculate() {
+  setStatus('계산 중...', true);
+  try {
+    const res = await fetch(`${BASE()}/calculate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(PAYLOAD)
+    });
+    const data = await res.json();
+    if (data.error) {
+      setStatus(`❌ 에러: ${data.error}`, false);
+    } else {
+      setStatus(`✅ 계산 완료 — 주택 ${data.주택별?.length || 0}채`, true);
+    }
+    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+  } catch(e) {
+    setStatus(`❌ 실패: ${e.message}`, false);
+  }
+}
+
+async function testSellOrder() {
+  setStatus('매도순서 분석 중...', true);
+  try {
+    const res = await fetch(`${BASE()}/sell-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(PAYLOAD)
+    });
+    const data = await res.json();
+    if (data.error) {
+      setStatus(`❌ 에러: ${data.error}`, false);
+    } else {
+      const order = data.추천순서?.map(o => `${o.순위}위: ${o.주택} (${o.핵심이유})`).join('\n');
+      setStatus(`✅ 매도 순서 분석 완료`, true);
+      document.getElementById('result').textContent = order + '\n\n' + JSON.stringify(data, null, 2);
+    }
+  } catch(e) {
+    setStatus(`❌ 실패: ${e.message}`, false);
+  }
+}
+</script>
+</body>
+</html>

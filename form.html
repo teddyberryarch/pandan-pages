@@ -1200,7 +1200,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); }
       </div>
       <div class="complete-email" id="complete-email-display"></div>
       <div style="font-size:15px; color:var(--dim2);">
-        스팸함도 확인해주세요 · 문의: help@pandan.kr
+        스팸함도 확인해주세요 · 문의: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="78101d1408380819161c191656130a">[email&#160;protected]</a>
       </div>
     </div>
   </div>
@@ -1219,7 +1219,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); }
 </div>
 
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ══════════════════════════════════════════════
 //  상태
 // ══════════════════════════════════════════════
@@ -1708,6 +1708,29 @@ function addHouseCard(isFirst = false) {
       </div>
     </div>
 
+    <!-- ④-2 월 비용/수익 -->
+    <div class="subsection" style="margin-top:16px;">
+      <div class="subsection-title">월 비용 / 수익</div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">월 관리비 (아시면)</label>
+          <div class="amount-wrap">
+            <input type="number" id="h${id}_monthly_cost" placeholder="0">
+            <span class="amount-unit-fixed">만원</span>
+          </div>
+          <p class="field-hint">아파트 관리비, 난방비 등 월 고정 비용</p>
+        </div>
+        <div class="field">
+          <label class="field-label">월 임대수익 (임대 중이면)</label>
+          <div class="amount-wrap">
+            <input type="number" id="h${id}_monthly_income" placeholder="0">
+            <span class="amount-unit-fixed">만원</span>
+          </div>
+          <p class="field-hint">월세 수입. 전세라면 0</p>
+        </div>
+      </div>
+    </div>
+
     <!-- ⑤ 재개발·재건축 -->
     <div class="subsection" style="margin-top:16px;">
       <div class="subsection-title">재개발·재건축</div>
@@ -1732,6 +1755,36 @@ function addHouseCard(isFirst = false) {
 
       <div class="cond" id="h${id}_cond_redev">
         <div class="cond-indent">
+          <div class="field">
+            <label class="field-label required">사업 유형</label>
+            <div class="radio-group col">
+              <div class="radio-item">
+                <input type="radio" name="h${id}_redev_type" id="h${id}_rt1" value="재개발">
+                <label for="h${id}_rt1"><span class="radio-dot"></span>재개발 (정비사업)</label>
+              </div>
+              <div class="radio-item">
+                <input type="radio" name="h${id}_redev_type" id="h${id}_rt2" value="재건축">
+                <label for="h${id}_rt2"><span class="radio-dot"></span>재건축</label>
+              </div>
+              <div class="radio-item">
+                <input type="radio" name="h${id}_redev_type" id="h${id}_rt3" value="모아타운">
+                <label for="h${id}_rt3"><span class="radio-dot"></span>모아타운 (소규모주택정비)</label>
+              </div>
+              <div class="radio-item">
+                <input type="radio" name="h${id}_redev_type" id="h${id}_rt4" value="리모델링">
+                <label for="h${id}_rt4"><span class="radio-dot"></span>리모델링</label>
+              </div>
+              <div class="radio-item">
+                <input type="radio" name="h${id}_redev_type" id="h${id}_rt5" value="가로주택정비">
+                <label for="h${id}_rt5"><span class="radio-dot"></span>가로주택정비</label>
+              </div>
+              <div class="radio-item">
+                <input type="radio" name="h${id}_redev_type" id="h${id}_rt6" value="기타">
+                <label for="h${id}_rt6"><span class="radio-dot"></span>기타 / 잘 모름</label>
+              </div>
+            </div>
+          </div>
+
           <div class="field">
             <label class="field-label">현재 진행 단계</label>
             <div class="radio-group col">
@@ -1799,6 +1852,15 @@ function addHouseCard(isFirst = false) {
             <label class="field-label">완공 후 입주 예정일 (아시면)</label>
             <input type="date" id="h${id}_redev_move_in">
             <p class="field-hint">완공 후 2년 실거주 시 1세대1주택 비과세 가능</p>
+          </div>
+
+          <div class="field">
+            <label class="field-label">완공 후 예상 시세 (아시면)</label>
+            <div class="amount-row">
+              <input type="number" id="h${id}_future_val_price" placeholder="0">
+              <div class="amount-unit active" id="h${id}_future_val_unit" onclick="toggleUnit('h${id}_future_val')">만원</div>
+            </div>
+            <p class="field-hint">주변 신축 실거래가 기준 입력 — 완공 후 절세 시나리오 계산에 사용됩니다</p>
           </div>
         </div>
       </div>
@@ -2132,13 +2194,18 @@ function collectFormData() {
         rentalRegDate: get('reg_date'),
         rentalRegType: get('reg_type'),
         rentalRegExpire: get('reg_expire'),
+        monthlyCost: get('monthly_cost'),              // 월 관리비
+        monthlyIncome: get('monthly_income'),           // 월 임대수익
         redevStatus: getRadio('redev'),
+        redevType: getRadio('redev_type'),            // 재개발/재건축/모아타운/리모델링
         redevStage: getRadio('redev_stage'),
         redevMgmtDate: get('redev_mgmt_date'),
         redevSalePrice: get('redev_sale_price'),   // 조합원 분양가
         redevEvalPrice: get('redev_eval_price'),   // 감정평가 인정액
         redevBurden: get('redev_burden'),
         redevMoveIn: get('redev_move_in'),         // 완공 후 입주 예정일
+        futureVal: get('future_val_price'),             // 완공 후 예상 시세
+        futureValUnit: getUnit('future_val'),            // 단위
       };
     }),
     plan: {
@@ -2214,10 +2281,4 @@ async function submitForm() {
 
 // ══════════════════════════════════════════════
 //  초기화
-// ══════════════════════════════════════════════
-(function init() {
-  addHouseCard(true); // 첫 번째 카드는 삭제 버튼 없음
-})();
-</script>
-</body>
-</html>
+// ══════════�
